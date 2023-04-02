@@ -1,2 +1,11 @@
+-- ./ -- [ WIP ]
+
+What is this?
+
 My personal Rojo template for developing games, included my own packages <@yrifl/SDN>.
 
+How to use this?
+
+Well, you have to install aftman from <@LPGhatguy/aftman>, and after that clone this repository using `git clone` and finally type this command to install other tools (Rojo, Selene, Wally) `aftman install`. Congratulations, you have your Rojo developer workspace setup, you can continue now to read Rojo documentation <rojo.space/docs>.
+
+Thank you, bye.
