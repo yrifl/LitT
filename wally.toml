@@ -1,7 +1,13 @@
 [package]
-name = "faiq/LitT"
+name = "faiq/litt"
 version = "0.1.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
 [dependencies]
+cmdr = "evaera/cmdr@1.9.0"
+promise = "evaera/promise@4.0.0"
+testez = "roblox/testez@0.4.1"
+janitor = "howmanysmall/janitor@1.15.1"
+roact = "roblox/roact@1.4.4"
+knit = "sleitnick/knit@1.4.7"
