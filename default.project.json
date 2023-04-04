@@ -2,80 +2,94 @@
   "name": "LitT",
   "tree": {
     "$className": "DataModel",
+	
+    "HttpService": {
+      "$className": "HttpService",
+      "$properties": {
+        "HttpEnabled": true
+      }
+    },
 
-	"ReplicatedFirst": {
-		"Common": {
-			"$path": "src/temp"
-		}
-	},
+    "ReplicatedFirst": {
+      "Launch": {
+		"$className": "Folder",
+        "$path": "./src/Temp"
+      }
+    },
 
     "ReplicatedStorage": {
       "Common": {
-        "$path": "src/shared"
+		"$className": "Folder",
+        "$path": "src/ReplicatedStorage"
       },
-	  "Packages": {
-		"$path": "Packages"
-	  }
+      "Packages": {
+		"$className": "Folder",
+        "$path": "Packages/"
+      }
     },
 
     "ServerScriptService": {
       "Server": {
-        "$path": "src/server"
+        "$path": "src/Server"
       }
     },
 
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "Client": {
-          "$path": "src/client"
+		  "$className": "Folder",
+          "$path": "src/Client"
         }
       }
     },
 
     "Workspace": {
-      "$properties": {
-        "FilteringEnabled": true
-      },
       "Baseplate": {
         "$className": "Part",
         "$properties": {
+          "Size": [
+            512.0,
+            20.0,
+            512.0
+          ],
           "Anchored": true,
           "Color": [
             0.38823,
             0.37254,
             0.38823
           ],
-          "Locked": true,
           "Position": [
-            0,
-            -10,
-            0
+            0.0,
+            -10.0,
+            0.0
           ],
-          "Size": [
-            512,
-            20,
-            512
-          ]
+          "Locked": true
         }
+      },
+      "$properties": {
+        "FilteringEnabled": true
       }
     },
-    "Lighting": {
-      "$properties": {
-        "Ambient": [
-          0,
-          0,
-          0
-        ],
-        "Brightness": 2,
-        "GlobalShadows": true,
-        "Outlines": false,
-        "Technology": "Voxel"
-      }
-    },
-    "SoundService": {
-      "$properties": {
-        "RespectFilteringEnabled": true
-      }
-    }
-  }
+	"Lighting": {
+		"$properties": {
+		  "Technology": "Voxel",
+		  "Outlines": false,
+		  "GlobalShadows": true,
+		  "Ambient": [
+			0.0,
+			0.0,
+			0.0
+		  ],
+		  "Brightness": 2.0
+		}
+	},
+	"SoundService": {
+		"$properties": {
+		  "RespectFilteringEnabled": true
+		}
+	}
+  },
+  "globIgnorePaths": [
+    "**/*.spec.lua"
+  ]
 }

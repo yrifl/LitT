@@ -1,2 +1,15 @@
+# https://kampfkarren.github.io/selene/
+
 std = "roblox"
 
+[lints]
+global_usage = "warn"
+duplicate_keys = "warn"
+unused_variable = "warn"
+unscoped_variables = "warn"
+suspicious_reverse_loop = "warn"
+manual_table_clone = "warn"
+incorrect_standard_library_use = "warn"
+mismatched_arg_count = "warn"
+
+divide_by_zero = "deny"
