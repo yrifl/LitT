@@ -1,13 +1,27 @@
 [package]
-name = "faiq/litt"
+name = "yrifl/lit"
 version = "0.1.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
-[dependencies]
+[dependencies] # My custom libs, you can edit.
 cmdr = "evaera/cmdr@1.9.0"
 promise = "evaera/promise@4.0.0"
 testez = "roblox/testez@0.4.1"
 janitor = "howmanysmall/janitor@1.15.1"
 roact = "roblox/roact@1.4.4"
+
+# Sleitnick's framework
 knit = "sleitnick/knit@1.4.7"
+
+# Sleitnick's libs https://sleitnick.github.io/RbxUtil/
+TableUtil = "sleitnick/table-util@1.2.0"
+PID = "sleitnick/pid@1.0.2"
+Signal = "sleitnick/signal@1.4.2"
+Option = "sleitnick/option@1.0.4"
+Concur = "sleitnick/concur@0.1.2"
+Log = "sleitnick/log@0.1.1"
+EnumList = "sleitnick/enum-list@2.0.1"
+TaskQueue = "sleitnick/task-queue@0.1.1"
+Timer = "sleitnick/timer@1.1.2"
+Symbol = "sleitnick/symbol@2.0.1"
