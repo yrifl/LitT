@@ -10,7 +10,7 @@ Promise = "evaera/promise@4.0.0"
 testez = "roblox/testez@0.4.1"
 Janitor = "howmanysmall/janitor@1.15.1"
 Roact = "roblox/roact@1.4.4"
-bridgenet2 = "ffrostflame/bridgenet2@0.1.0"
+BridgeNet2 = "ffrostflame/bridgenet2@0.1.0"
 
 # Sleitnick's framework
 Knit = "sleitnick/knit@1.4.7"
