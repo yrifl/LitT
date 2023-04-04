@@ -2,10 +2,16 @@
 
 What is this?
 
-My personal Rojo template for developing games, included my own packages <@yrifl/SDN>. This repository is Lit >:D
+My personal Rojo template for developing games, included my own packages <@yrifl/SDN>. So you might think, how do I use this template?
 
-How to use this?
+Well, you have to install aftman from <@LPGhatguy/aftman>, and after that clone this repository using `git clone` and finally type this command to install other tools (Rojo, Selene, Wally, etc) `aftman install`. Congratulations, you have your Rojo developer workspace set up! You can continue now to read Rojo documentation <rojo.space/docs> for further development. 
 
-Well, you have to install aftman from <@LPGhatguy/aftman>, and after that clone this repository using `git clone` and finally type this command to install other tools (Rojo, Selene, Wally) `aftman install`. Congratulations, you have your Rojo developer workspace set up! You can continue now to read Rojo documentation <rojo.space/docs> for further development.
+List of installed tools: 
+	- aftman <LPGhatguy@aftman>
+	- moonwave <evaera@moonwave>
+	- rojo <rojo-rbx@rojo>
+	- wally <UpliftGames@wally>
+	- selene <Kampfkarren@selene>
+	- stylua <JohnnyMorganz@StyLua>
 
 Thank you, bye.

@@ -3,6 +3,12 @@
   "tree": {
     "$className": "DataModel",
 
+	"ReplicatedFirst": {
+		"Common": {
+			"$path": "src/temp"
+		}
+	},
+
     "ReplicatedStorage": {
       "Common": {
         "$path": "src/shared"
