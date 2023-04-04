@@ -12,14 +12,12 @@
 
     "ReplicatedFirst": {
 		"$className": "ReplicatedFirst",
-		"$ignoreUnknownInstances": true,
 		"Launch": {
 			"$path": "src/Temp"
 		}
     },
 
     "ReplicatedStorage": {
-	  "$ignoreUnknownInstances": true,
 	  "Common": {
 		"$path": "src/Shared"
 	  },
@@ -30,8 +28,10 @@
     },
 
     "ServerScriptService": {
+		"$properties": {
+			"LoadStringEnabled": true
+		},
 		"$className": "ServerScriptService",
-		"$ignoreUnknownInstances": true,
 		"$path": "src/Server"
     },
 
