@@ -23,123 +23,1066 @@
     <Properties>
       <string name="Name">ReplicatedFirst</string>
     </Properties>
-    <Item class="LocalScript" referent="3">
+    <Item class="Folder" referent="3">
       <Properties>
         <string name="Name">Launch</string>
-        <string name="Source"><![CDATA[print([[
-Are you an exploiter? Instead of Exploiting our games, you could give us what vulnearability you got on this game.
-We have a bounty about 1000$ Robux.
-
-Contact the game owner, for further information. Thanks!
-]])
-]]></string>
       </Properties>
       <Item class="LocalScript" referent="4">
         <Properties>
-          <string name="Name">Init</string>
-          <string name="Source"><![CDATA[print([[
-Are you an exploiter? Instead of Exploiting our games, you could give us what vulnearability you got on this game.
-We have a bounty about 1000$ Robux.
+          <string name="Name">Exploiter</string>
+          <string name="Source"><![CDATA[-- Message for probably for Exploiters..
+print([[
+ >*	Hello there! Are you an exploiter? If you are, Well then.. stop! I can offer you something more. Our team put a bounty 
+ of a 1000$ Robux for you (Exploiters) to give our team a vulnerable parts of our game in detail through Roblox messages, if we approve we 
+ will send the 1000$ Robux bounty to you through gamepass, clothes, etc. If you're interested message us you're findings.. Goodluck 
 
-Contact the game owner, for further information. Thanks!
+ - Developer ;)
 ]])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="LocalScript" referent="5">
+        <Properties>
+          <string name="Name">Loader</string>
+          <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local P = require(ReplicatedStorage.Common.Slug:WaitForChild())
+
+P.Log("Startup", "Loading assets & scripts, hold on user!")
 ]]></string>
         </Properties>
       </Item>
     </Item>
   </Item>
-  <Item class="ReplicatedStorage" referent="5">
+  <Item class="ReplicatedStorage" referent="6">
     <Properties>
       <string name="Name">ReplicatedStorage</string>
     </Properties>
-    <Item class="Folder" referent="6">
+    <Item class="Folder" referent="7">
       <Properties>
         <string name="Name">Common</string>
       </Properties>
+      <Item class="ModuleScript" referent="8">
+        <Properties>
+          <string name="Name">DataStore2</string>
+          <string name="Source"><![CDATA[--[[
+	DataStore2: A wrapper for data stores that caches, saves player's data, and uses berezaa's method of saving data.
+	Use require(1936396537) to have an updated version of DataStore2.
+	DataStore2(dataStoreName, player) - Returns a DataStore2 DataStore
+	DataStore2 DataStore:
+	- Get([defaultValue])
+	- Set(value)
+	- Update(updateFunc)
+	- Increment(value, defaultValue)
+	- BeforeInitialGet(modifier)
+	- BeforeSave(modifier)
+	- Save()
+	- SaveAsync()
+	- OnUpdate(callback)
+	- BindToClose(callback)
+	local coinStore = DataStore2("Coins", player)
+	To give a player coins:
+	coinStore:Increment(50)
+	To get the current player's coins:
+	coinStore:Get()
+--]]
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ServerStorage = game:GetService("ServerStorage")
+local Packages = game:GetService("ReplicatedStorage").Packages
+
+local Constants = require(script.Constants)
+local SavingMethods = require(script.SavingMethods)
+local Settings = require(script.Settings)
+local TableUtil = require(script.TableUtil)
+local Verifier = require(script.Verifier)
+local Promise = require(Packages.Promise)
+
+local SaveInStudioObject = ServerStorage:FindFirstChild("SaveInStudio")
+local SaveInStudio = SaveInStudioObject and SaveInStudioObject.Value
+
+local function clone(value)
+	if typeof(value) == "table" then
+		return TableUtil.clone(value)
+	else
+		return value
+	end
+end
+
+--DataStore object
+local DataStore = {}
+
+--Internal functions
+function DataStore:Debug(...)
+	if self.debug then
+		print(...)
+	end
+end
+
+function DataStore:_GetRaw()
+	if self.getRawPromise then
+		return self.getRawPromise
+	end
+
+	self.getRawPromise = self.savingMethod:Get():andThen(function(value)
+		self.value = value
+		self:Debug("value received")
+		self.haveValue = true
+	end):finally(function()
+		self.getting = false
+	end)
+
+	return self.getRawPromise
+end
+
+function DataStore:_Update(dontCallOnUpdate)
+	if not dontCallOnUpdate then
+		for _,callback in pairs(self.callbacks) do
+			callback(self.value, self)
+		end
+	end
+
+	self.haveValue = true
+	self.valueUpdated = true
+end
+
+--Public functions
+
+function DataStore:Get(defaultValue, dontAttemptGet)
+	if dontAttemptGet then
+		return self.value
+	end
+
+	local backupCount = 0
+
+	if not self.haveValue then
+		while not self.haveValue do
+			local success, error = self:_GetRaw():await()
+
+			if not success then
+				if self.backupRetries then
+					backupCount = backupCount + 1
+
+					if backupCount >= self.backupRetries then
+						self.backup = true
+						self.haveValue = true
+						self.value = self.backupValue
+						break
+					end
+				end
+
+				self:Debug("Get returned error:", error)
+			end
+		end
+
+		if self.value ~= nil then
+			for _,modifier in pairs(self.beforeInitialGet) do
+				self.value = modifier(self.value, self)
+			end
+		end
+	end
+
+	local value
+
+	if self.value == nil and defaultValue ~= nil then --not using "not" because false is a possible value
+		value = defaultValue
+	else
+		value = self.value
+	end
+
+	value = clone(value)
+
+	self.value = value
+
+	return value
+end
+
+function DataStore:GetAsync(...)
+	local args = { ... }
+	return Promise.async(function(resolve)
+		resolve(self:Get(unpack(args)))
+	end)
+end
+
+function DataStore:GetTable(default, ...)
+	local success, result = self:GetTableAsync(default, ...):await()
+	if not success then
+		error(result)
+	end
+	return result
+end
+
+function DataStore:GetTableAsync(default, ...)
+	assert(default ~= nil, "You must provide a default value.")
+
+	return self:GetAsync(default, ...):andThen(function(result)
+		local changed = false
+		assert(
+			typeof(result) == "table",
+			":GetTable/:GetTableAsync was used when the value in the data store isn't a table."
+		)
+
+		for defaultKey, defaultValue in pairs(default) do
+			if result[defaultKey] == nil then
+				result[defaultKey] = defaultValue
+				changed = true
+			end
+		end
+
+		if changed then
+			self:Set(result)
+		end
+
+		return result
+	end)
+end
+
+function DataStore:Set(value, _dontCallOnUpdate)
+	self.value = clone(value)
+	self:_Update(_dontCallOnUpdate)
+end
+
+function DataStore:Update(updateFunc)
+	self.value = updateFunc(self.value)
+	self:_Update()
+end
+
+function DataStore:Increment(value, defaultValue)
+	self:Set(self:Get(defaultValue) + value)
+end
+
+function DataStore:IncrementAsync(add, defaultValue)
+	self:GetAsync(defaultValue):andThen(function(value)
+		self:Set(value + add)
+	end)
+end
+
+function DataStore:OnUpdate(callback)
+	table.insert(self.callbacks, callback)
+end
+
+function DataStore:BeforeInitialGet(modifier)
+	table.insert(self.beforeInitialGet, modifier)
+end
+
+function DataStore:BeforeSave(modifier)
+	self.beforeSave = modifier
+end
+
+function DataStore:AfterSave(callback)
+	table.insert(self.afterSave, callback)
+end
+
+--[[**
+	<description>
+	Adds a backup to the data store if :Get() fails a specified amount of times.
+	Will return the value provided (if the value is nil, then the default value of :Get() will be returned)
+	and mark the data store as a backup store, and attempts to :Save() will not truly save.
+	</description>
+	<parameter name = "retries">
+	Number of retries before the backup will be used.
+	</parameter>
+	<parameter name = "value">
+	The value to return to :Get() in the case of a failure.
+	You can keep this blank and the default value you provided with :Get() will be used instead.
+	</parameter>
+**--]]
+function DataStore:SetBackup(retries, value)
+	self.backupRetries = retries
+	self.backupValue = value
+end
+
+--[[**
+	<description>
+	Unmark the data store as a backup data store and tell :Get() and reset values to nil.
+	</description>
+**--]]
+function DataStore:ClearBackup()
+	self.backup = nil
+	self.haveValue = false
+	self.value = nil
+end
+
+--[[**
+	<returns>
+	Whether or not the data store is a backup data store and thus won't save during :Save() or call :AfterSave().
+	</returns>
+**--]]
+function DataStore:IsBackup()
+	return self.backup ~= nil --some people haven't learned if x then yet, and will do if x == false then.
+end
+
+--[[**
+	<description>
+	Saves the data to the data store. Called when a player leaves.
+	</description>
+**--]]
+function DataStore:Save()
+	local success, result = self:SaveAsync():await()
+
+	if success then
+		print("saved " .. self.Name)
+	else
+		error(result)
+	end
+end
+
+--[[**
+	<description>
+	Asynchronously saves the data to the data store.
+	</description>
+**--]]
+function DataStore:SaveAsync()
+	return Promise.async(function(resolve, reject)
+		if not self.valueUpdated then
+			warn(("Data store %s was not saved as it was not updated."):format(self.Name))
+			resolve(false)
+			return
+		end
+
+		if RunService:IsStudio() and not SaveInStudio then
+			warn(("Data store %s attempted to save in studio while SaveInStudio is false."):format(self.Name))
+			if not SaveInStudioObject then
+				warn("You can set the value of this by creating a BoolValue named SaveInStudio in ServerStorage.")
+			end
+			resolve(false)
+			return
+		end
+
+		if self.backup then
+			warn("This data store is a backup store, and thus will not be saved.")
+			resolve(false)
+			return
+		end
+
+		if self.value ~= nil then
+			local save = clone(self.value)
+
+			if self.beforeSave then
+				local success, result = pcall(self.beforeSave, save, self)
+
+				if success then
+					save = result
+				else
+					reject(result, Constants.SaveFailure.BeforeSaveError)
+					return
+				end
+			end
+
+			local problem = Verifier.testValidity(save)
+			if problem then
+				reject(problem, Constants.SaveFailure.InvalidData)
+				return
+			end
+
+			return self.savingMethod:Set(save):andThen(function()
+				resolve(true, save)
+			end)
+		end
+	end):andThen(function(saved, save)
+		if saved then
+			for _, afterSave in pairs(self.afterSave) do
+				local success, err = pcall(afterSave, save, self)
+
+				if not success then
+					warn("Error on AfterSave: "..err)
+				end
+			end
+
+			self.valueUpdated = false
+		end
+	end)
+end
+
+function DataStore:BindToClose(callback)
+	table.insert(self.bindToClose, callback)
+end
+
+function DataStore:GetKeyValue(key)
+	return (self.value or {})[key]
+end
+
+function DataStore:SetKeyValue(key, newValue)
+	if not self.value then
+		self.value = self:Get({})
+	end
+
+	self.value[key] = newValue
+end
+
+local CombinedDataStore = {}
+
+do
+	function CombinedDataStore:BeforeInitialGet(modifier)
+		self.combinedBeforeInitialGet = modifier
+	end
+
+	function CombinedDataStore:BeforeSave(modifier)
+		self.combinedBeforeSave = modifier
+	end
+
+	function CombinedDataStore:Get(defaultValue, dontAttemptGet)
+		local tableResult = self.combinedStore:Get({})
+		local tableValue = tableResult[self.combinedName]
+
+		if not dontAttemptGet then
+			if tableValue == nil then
+				tableValue = defaultValue
+			else
+				if self.combinedBeforeInitialGet and not self.combinedInitialGot then
+					tableValue = self.combinedBeforeInitialGet(tableValue)
+				end
+			end
+		end
+
+		self.combinedInitialGot = true
+		tableResult[self.combinedName] = clone(tableValue)
+		self.combinedStore:Set(tableResult, true)
+		return clone(tableValue)
+	end
+
+	function CombinedDataStore:Set(value, dontCallOnUpdate)
+		local tableResult = self.combinedStore:GetTable({})
+		tableResult[self.combinedName] = value
+		self.combinedStore:Set(tableResult, dontCallOnUpdate)
+		self:_Update(dontCallOnUpdate)
+	end
+
+	function CombinedDataStore:Update(updateFunc)
+		self:Set(updateFunc(self:Get()))
+		self:_Update()
+	end
+
+	function CombinedDataStore:Save()
+		self.combinedStore:Save()
+	end
+
+	function CombinedDataStore:OnUpdate(callback)
+		if not self.onUpdateCallbacks then
+			self.onUpdateCallbacks = { callback }
+		else
+			self.onUpdateCallbacks[#self.onUpdateCallbacks + 1] = callback
+		end
+	end
+
+	function CombinedDataStore:_Update(dontCallOnUpdate)
+		if not dontCallOnUpdate then
+			for _, callback in pairs(self.onUpdateCallbacks or {}) do
+				callback(self:Get(), self)
+			end
+		end
+
+		self.combinedStore:_Update(true)
+	end
+
+	function CombinedDataStore:SetBackup(retries)
+		self.combinedStore:SetBackup(retries)
+	end
+end
+
+local DataStoreMetatable = {}
+
+DataStoreMetatable.__index = DataStore
+
+--Library
+local DataStoreCache = {}
+
+local DataStore2 = {}
+local combinedDataStoreInfo = {}
+
+--[[**
+	<description>
+	Run this once to combine all keys provided into one "main key".
+	Internally, this means that data will be stored in a table with the key mainKey.
+	This is used to get around the 2-DataStore2 reliability caveat.
+	</description>
+	<parameter name = "mainKey">
+	The key that will be used to house the table.
+	</parameter>
+	<parameter name = "...">
+	All the keys to combine under one table.
+	</parameter>
+**--]]
+function DataStore2.Combine(mainKey, ...)
+	for _, name in pairs({...}) do
+		combinedDataStoreInfo[name] = mainKey
+	end
+end
+
+function DataStore2.ClearCache()
+	DataStoreCache = {}
+end
+
+function DataStore2.SaveAll(player)
+	if DataStoreCache[player] then
+		for _, dataStore in pairs(DataStoreCache[player]) do
+			if dataStore.combinedStore == nil then
+				dataStore:Save()
+			end
+		end
+	end
+end
+
+function DataStore2.PatchGlobalSettings(patch)
+	for key, value in pairs(patch) do
+		assert(Settings[key] ~= nil, "No such key exists: " .. key)
+		-- TODO: Implement type checking with this when osyris' t is in
+		Settings[key] = value
+	end
+end
+
+function DataStore2.__call(_, dataStoreName, player)
+	assert(
+		typeof(dataStoreName) == "string" and typeof(player) == "Instance",
+		("DataStore2() API call expected {string dataStoreName, Instance player}, got {%s, %s}")
+		:format(
+			typeof(dataStoreName),
+			typeof(player)
+		)
+	)
+
+	if DataStoreCache[player] and DataStoreCache[player][dataStoreName] then
+		return DataStoreCache[player][dataStoreName]
+	elseif combinedDataStoreInfo[dataStoreName] then
+		local dataStore = DataStore2(combinedDataStoreInfo[dataStoreName], player)
+
+		dataStore:BeforeSave(function(combinedData)
+			for key in pairs(combinedData) do
+				if combinedDataStoreInfo[key] then
+					local combinedStore = DataStore2(key, player)
+					local value = combinedStore:Get(nil, true)
+					if value ~= nil then
+						if combinedStore.combinedBeforeSave then
+							value = combinedStore.combinedBeforeSave(clone(value))
+						end
+						combinedData[key] = value
+					end
+				end
+			end
+
+			return combinedData
+		end)
+
+		local combinedStore = setmetatable({
+			combinedName = dataStoreName,
+			combinedStore = dataStore,
+		}, {
+			__index = function(_, key)
+				return CombinedDataStore[key] or dataStore[key]
+			end
+		})
+
+		if not DataStoreCache[player] then
+			DataStoreCache[player] = {}
+		end
+
+		DataStoreCache[player][dataStoreName] = combinedStore
+		return combinedStore
+	end
+
+	local dataStore = {}
+
+	dataStore.Name = dataStoreName
+	dataStore.UserId = player.UserId
+
+	dataStore.callbacks = {}
+	dataStore.beforeInitialGet = {}
+	dataStore.afterSave = {}
+	dataStore.bindToClose = {}
+	dataStore.savingMethod = SavingMethods[Settings.SavingMethod].new(dataStore)
+
+	setmetatable(dataStore, DataStoreMetatable)
+
+	local event, fired = Instance.new("BindableEvent"), false
+
+	game:BindToClose(function()
+		if not fired then
+			spawn(function()
+				player.Parent = nil -- Forces AncestryChanged to fire and save the data
+			end)
+
+			event.Event:wait()
+		end
+
+		local value = dataStore:Get(nil, true)
+
+		for _, bindToClose in pairs(dataStore.bindToClose) do
+			bindToClose(player, value)
+		end
+	end)
+
+	local playerLeavingConnection
+	playerLeavingConnection = player.AncestryChanged:Connect(function()
+		if player:IsDescendantOf(game) then return end
+		playerLeavingConnection:Disconnect()
+		dataStore:SaveAsync():andThen(function()
+			print("player left, saved " .. dataStoreName)
+		end):catch(function(error)
+			-- TODO: Something more elegant
+			warn("error when player left! " .. error)
+		end):finally(function()
+			event:Fire()
+			fired = true
+		end)
+
+		delay(40, function() --Give a long delay for people who haven't figured out the cache :^(
+			DataStoreCache[player] = nil
+		end)
+	end)
+
+	if not DataStoreCache[player] then
+		DataStoreCache[player] = {}
+	end
+
+	DataStoreCache[player][dataStoreName] = dataStore
+
+	return dataStore
+end
+
+DataStore2.Constants = Constants
+
+return setmetatable(DataStore2, DataStore2)
+]]></string>
+        </Properties>
+        <Item class="ModuleScript" referent="9">
+          <Properties>
+            <string name="Name">Constants</string>
+            <string name="Source"><![CDATA[local function symbol(text)
+	local symbol = newproxy(true)
+	getmetatable(symbol).__tostring = function() return text end
+	return symbol
+end
+
+return {
+	SaveFailure = {
+		BeforeSaveError = symbol("BeforeSaveError"),
+		DataStoreFailure = symbol("DataStoreFailure"),
+		InvalidData = symbol("InvalidData"),
+	}
+}
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="10">
+          <Properties>
+            <string name="Name">SavingMethods</string>
+            <string name="Source"><![CDATA[return {
+	Standard = require(script.Standard),
+	OrderedBackups = require(script.OrderedBackups),
+}
+]]></string>
+          </Properties>
+          <Item class="ModuleScript" referent="11">
+            <Properties>
+              <string name="Name">OrderedBackups</string>
+              <string name="Source"><![CDATA[--[[
+	berezaa's method of saving data (from the dev forum):
+	What I do and this might seem a little over-the-top but it's fine as long as you're not using datastores
+	excessively elsewhere is have a datastore and an ordereddatastore for each player. When you perform a save,
+	add a key (can be anything) with the value of os.time() to the ordereddatastore and save a key with the os.time()
+	and the value of the player's data to the regular datastore. Then, when loading data, get the highest number from
+	the ordered data store (most recent save) and load the data with that as a key.
+	Ever since I implemented this, pretty much no one has ever lost data. There's no caches to worry about either
+	because you're never overriding any keys. Plus, it has the added benefit of allowing you to restore lost data,
+	since every save doubles as a backup which can be easily found with the ordereddatastore
+	edit: while there's no official comment on this, many developers including myself have noticed really bad cache
+	times and issues with using the same datastore keys to save data across multiple places in the same game. With
+	this method, data is almost always instantly accessible immediately after a player teleports, making it useful
+	for multi-place games.
+--]]
+
+local DataStoreService = game:GetService("DataStoreService")
+local Packages = game:GetService("ReplicatedStorage").Packages
+local Promise = require(Packages.Promise)
+
+local OrderedBackups = {}
+OrderedBackups.__index = OrderedBackups
+
+function OrderedBackups:Get()
+	return Promise.async(function(resolve)
+		resolve(self.orderedDataStore:GetSortedAsync(false, 1):GetCurrentPage()[1])
+	end):andThen(function(mostRecentKeyPage)
+		if mostRecentKeyPage then
+			local recentKey = mostRecentKeyPage.value
+			self.dataStore2:Debug("most recent key", mostRecentKeyPage)
+			self.mostRecentKey = recentKey
+
+			return Promise.async(function(resolve)
+				resolve(self.dataStore:GetAsync(recentKey))
+			end)
+		else
+			self.dataStore2:Debug("no recent key")
+			return nil
+		end
+	end)
+end
+
+function OrderedBackups:Set(value)
+	local key = (self.mostRecentKey or 0) + 1
+
+	return Promise.async(function(resolve)
+		self.dataStore:SetAsync(key, value)
+		resolve()
+	end):andThen(function()
+		return Promise.promisify(function()
+			self.orderedDataStore:SetAsync(key, key)
+		end)()
+	end):andThen(function()
+		self.mostRecentKey = key
+	end)
+end
+
+function OrderedBackups.new(dataStore2)
+	local dataStoreKey = dataStore2.Name .. "/" .. dataStore2.UserId
+
+	local info = {
+		dataStore2 = dataStore2,
+		dataStore = DataStoreService:GetDataStore(dataStoreKey),
+		orderedDataStore = DataStoreService:GetOrderedDataStore(dataStoreKey),
+	}
+
+	return setmetatable(info, OrderedBackups)
+end
+
+return OrderedBackups
+]]></string>
+            </Properties>
+          </Item>
+          <Item class="ModuleScript" referent="12">
+            <Properties>
+              <string name="Name">Standard</string>
+              <string name="Source"><![CDATA[-- Standard saving of data stores
+-- The key you provide to DataStore2 is the name of the store with GetDataStore
+-- GetAsync/UpdateAsync are then called based on the user ID
+local DataStoreService = game:GetService("DataStoreService")
+local Packages = game:GetService("ReplicatedStorage").Packages
+local Promise = require(Packages.Promise)
+
+local Standard = {}
+Standard.__index = Standard
+
+function Standard:Get()
+	return Promise.async(function(resolve)
+		resolve(self.dataStore:GetAsync(self.userId))
+	end)
+end
+
+function Standard:Set(value)
+	return Promise.async(function(resolve)
+		self.dataStore:UpdateAsync(self.userId, function()
+			return value
+		end)
+
+		resolve()
+	end)
+end
+
+function Standard.new(dataStore2)
+	return setmetatable({
+		dataStore = DataStoreService:GetDataStore(dataStore2.Name),
+		userId = dataStore2.UserId,
+	}, Standard)
+end
+
+return Standard
+]]></string>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="ModuleScript" referent="13">
+          <Properties>
+            <string name="Name">Settings</string>
+            <string name="Source"><![CDATA[return {
+	-- What saving method you would like to use
+	-- Possible options:
+	-- OrderedBackups: The berezaa method that ensures prevention of data loss
+	-- Standard: Standard data stores. Equivalent to :GetDataStore(key):GetAsync(UserId)
+	SavingMethod = "OrderedBackups",
+}
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="14">
+          <Properties>
+            <string name="Name">TableUitl</string>
+            <string name="Source"><![CDATA[local TableUtil = {}
+
+function TableUtil.clone(tbl)
+	local clone = {}
+
+	for key, value in pairs(tbl) do
+		if typeof(value) == "table" then
+			clone[key] = TableUtil.clone(value)
+		else
+			clone[key] = value
+		end
+	end
+
+	return clone
+end
+
+return TableUtil
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="15">
+          <Properties>
+            <string name="Name">Verifier</string>
+            <string name="Source"><![CDATA[-- Written by Coercii
+
+local Verifier = {}
+
+function Verifier.typeValid(data)
+	return type(data) ~= "userdata", typeof(data)
+end
+
+function Verifier.scanValidity(tbl, passed, path)
+	if type(tbl) ~= "table" then
+		return Verifier.scanValidity({input = tbl}, {}, {})
+	end
+	passed, path = passed or {}, path or {"input"}
+	passed[tbl] = true
+	local tblType
+	do
+		local key = next(tbl)
+		if type(key) == "number" then
+			tblType = "Array"
+		else
+			tblType = "Dictionary"
+		end
+	end
+	local last = 0
+	for key, value in next, tbl do
+		path[#path + 1] = tostring(key)
+		if type(key) == "number" then
+			if tblType == "Dictionary" then
+				return false, path, "Mixed Array/Dictionary"
+			elseif key%1 ~= 0 then  -- if not an integer
+				return false, path, "Non-integer index"
+			elseif key == math.huge or key == -math.huge then
+				return false, path, "(-)Infinity index"
+			end
+		elseif type(key) ~= "string" then
+			return false, path, "Non-string key", typeof(key)
+		elseif tblType == "Array" then
+			return false, path, "Mixed Array/Dictionary"
+		end
+		if tblType == "Array" then
+			if last ~= key - 1 then
+				return false, path, "Array with non-sequential indexes"
+			end
+			last = key
+		end
+		local isTypeValid, valueType = Verifier.typeValid(value)
+		if not isTypeValid then
+			return false, path, "Invalid type", valueType
+		end
+		if type(value) == "table" then
+			if passed[value] then
+				return false, path, "Cyclic"
+			end
+			local isValid, keyPath, reason, extra = Verifier.scanValidity(value, passed, path)
+			if not isValid then
+				return isValid, keyPath, reason, extra
+			end
+		end
+		path[#path] = nil
+	end
+	passed[tbl] = nil
+	return true
+end
+
+function Verifier.getStringPath(path)
+	return table.concat(path, ".")
+end
+
+function Verifier.testValidity(input)
+	local isValid, keyPath, reason, extra = Verifier.scanValidity(input)
+	if not isValid then
+		if extra then
+			return "Invalid at "..Verifier.getStringPath(keyPath).." because: "..reason.." ("..tostring(extra)..")"
+		else
+			return "Invalid at "..Verifier.getStringPath(keyPath).." because: "..reason
+		end
+	end
+end
+
+return Verifier
+]]></string>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="ModuleScript" referent="16">
+        <Properties>
+          <string name="Name">Slug</string>
+          <string name="Source"><![CDATA[local M = {
+
+}
+
+function M.Log(Head, Info)
+	print("[ ".. Head .." ]  :-> ".. Info)
+end
+
+function M.Warn(Head, Info)
+	warn("[ ".. Head .." ]  :-> ".. Info)
+end
+
+function M.Error(Head, Info)
+	error("[ ".. Head .." ]  :-> ".. Info)
+end
+
+
+return M
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="17">
+        <Properties>
+          <string name="Name">Swl</string>
+          <string name="Source"><![CDATA[local M = {
+
+}
+
+local RunService = game:GetService("RunService")
+
+]]></string>
+        </Properties>
+      </Item>
     </Item>
-    <Item class="Folder" referent="7">
+    <Item class="Folder" referent="18">
       <Properties>
         <string name="Name">Packages</string>
       </Properties>
-      <Item class="ModuleScript" referent="8">
+      <Item class="ModuleScript" referent="19">
+        <Properties>
+          <string name="Name">Cmdr</string>
+          <string name="Source"><![CDATA[return require(script.Parent._Index["evaera_cmdr@1.9.0"]["cmdr"])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="20">
+        <Properties>
+          <string name="Name">Component</string>
+          <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_component@2.4.6"]["component"])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="21">
         <Properties>
           <string name="Name">Concur</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_concur@0.1.2"]["concur"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="9">
+      <Item class="ModuleScript" referent="22">
         <Properties>
           <string name="Name">EnumList</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_enum-list@2.0.1"]["enum-list"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="10">
+      <Item class="ModuleScript" referent="23">
+        <Properties>
+          <string name="Name">Janitor</string>
+          <string name="Source"><![CDATA[return require(script.Parent._Index["howmanysmall_janitor@1.15.1"]["janitor"])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="24">
+        <Properties>
+          <string name="Name">Knit</string>
+          <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_knit@1.4.7"]["knit"])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="25">
         <Properties>
           <string name="Name">Log</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_log@0.1.1"]["log"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="11">
+      <Item class="ModuleScript" referent="26">
         <Properties>
           <string name="Name">Option</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_option@1.0.4"]["option"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="12">
+      <Item class="ModuleScript" referent="27">
         <Properties>
           <string name="Name">PID</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_pid@1.0.2"]["pid"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="13">
+      <Item class="ModuleScript" referent="28">
+        <Properties>
+          <string name="Name">Promise</string>
+          <string name="Source"><![CDATA[return require(script.Parent._Index["evaera_promise@4.0.0"]["promise"])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="29">
+        <Properties>
+          <string name="Name">Roact</string>
+          <string name="Source"><![CDATA[return require(script.Parent._Index["roblox_roact@1.4.4"]["roact"])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="30">
         <Properties>
           <string name="Name">Signal</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_signal@1.4.2"]["signal"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="14">
+      <Item class="ModuleScript" referent="31">
+        <Properties>
+          <string name="Name">Streamable</string>
+          <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_streamable@1.2.4"]["streamable"])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="32">
         <Properties>
           <string name="Name">Symbol</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_symbol@2.0.1"]["symbol"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="15">
+      <Item class="ModuleScript" referent="33">
         <Properties>
           <string name="Name">TableUtil</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_table-util@1.2.0"]["table-util"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="16">
+      <Item class="ModuleScript" referent="34">
         <Properties>
           <string name="Name">TaskQueue</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_task-queue@0.1.1"]["task-queue"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="17">
+      <Item class="ModuleScript" referent="35">
         <Properties>
           <string name="Name">Timer</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_timer@1.1.2"]["timer"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="Folder" referent="18">
+      <Item class="Folder" referent="36">
         <Properties>
           <string name="Name">_Index</string>
         </Properties>
-        <Item class="Folder" referent="19">
+        <Item class="Folder" referent="37">
           <Properties>
             <string name="Name">evaera_cmdr@1.9.0</string>
           </Properties>
-          <Item class="ModuleScript" referent="20">
+          <Item class="ModuleScript" referent="38">
             <Properties>
               <string name="Name">cmdr</string>
               <string name="Source">local RunService = game:GetService("RunService")
@@ -180,15 +1123,15 @@ end
 
 return Cmdr</string>
             </Properties>
-            <Item class="Folder" referent="21">
+            <Item class="Folder" referent="39">
               <Properties>
                 <string name="Name">BuiltInCommands</string>
               </Properties>
-              <Item class="Folder" referent="22">
+              <Item class="Folder" referent="40">
                 <Properties>
                   <string name="Name">Admin</string>
                 </Properties>
-                <Item class="ModuleScript" referent="23">
+                <Item class="ModuleScript" referent="41">
                   <Properties>
                     <string name="Name">announce</string>
                     <string name="Source">return {
@@ -206,7 +1149,7 @@ return Cmdr</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="24">
+                <Item class="ModuleScript" referent="42">
                   <Properties>
                     <string name="Name">announceServer</string>
                     <string name="Source">local TextService = game:GetService("TextService")
@@ -226,7 +1169,7 @@ return function (context, text)
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="25">
+                <Item class="ModuleScript" referent="43">
                   <Properties>
                     <string name="Name">gotoPlace</string>
                     <string name="Source">return {
@@ -259,7 +1202,7 @@ end</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="26">
+                <Item class="ModuleScript" referent="44">
                   <Properties>
                     <string name="Name">gotoPlaceServer</string>
                     <string name="Source"><![CDATA[local TeleportService = game:GetService("TeleportService")
@@ -288,7 +1231,7 @@ end
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="27">
+                <Item class="ModuleScript" referent="45">
                   <Properties>
                     <string name="Name">kick</string>
                     <string name="Source">return {
@@ -306,7 +1249,7 @@ end
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="28">
+                <Item class="ModuleScript" referent="46">
                   <Properties>
                     <string name="Name">kickServer</string>
                     <string name="Source">return function (_, players)
@@ -318,7 +1261,7 @@ end
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="29">
+                <Item class="ModuleScript" referent="47">
                   <Properties>
                     <string name="Name">kill</string>
                     <string name="Source">return {
@@ -336,7 +1279,7 @@ end</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="30">
+                <Item class="ModuleScript" referent="48">
                   <Properties>
                     <string name="Name">killServer</string>
                     <string name="Source">return function (_, players)
@@ -350,7 +1293,7 @@ end</string>
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="31">
+                <Item class="ModuleScript" referent="49">
                   <Properties>
                     <string name="Name">respawn</string>
                     <string name="Source"><![CDATA[return {
@@ -371,7 +1314,7 @@ end</string>
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="32">
+                <Item class="ModuleScript" referent="50">
                   <Properties>
                     <string name="Name">respawnServer</string>
                     <string name="Source"><![CDATA[return function(_, players)
@@ -385,7 +1328,7 @@ end
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="33">
+                <Item class="ModuleScript" referent="51">
                   <Properties>
                     <string name="Name">teleport</string>
                     <string name="Source">return {
@@ -412,7 +1355,7 @@ end
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="34">
+                <Item class="ModuleScript" referent="52">
                   <Properties>
                     <string name="Name">teleportServer</string>
                     <string name="Source"><![CDATA[return function (_, fromPlayers, destination)
@@ -440,11 +1383,11 @@ end
                   </Properties>
                 </Item>
               </Item>
-              <Item class="Folder" referent="35">
+              <Item class="Folder" referent="53">
                 <Properties>
                   <string name="Name">Debug</string>
                 </Properties>
-                <Item class="ModuleScript" referent="36">
+                <Item class="ModuleScript" referent="54">
                   <Properties>
                     <string name="Name">blink</string>
                     <string name="Source">return {
@@ -472,7 +1415,7 @@ end
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="37">
+                <Item class="ModuleScript" referent="55">
                   <Properties>
                     <string name="Name">fetch</string>
                     <string name="Source">return {
@@ -490,7 +1433,7 @@ end
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="38">
+                <Item class="ModuleScript" referent="56">
                   <Properties>
                     <string name="Name">fetchServer</string>
                     <string name="Source">local HttpService = game:GetService("HttpService")
@@ -500,7 +1443,7 @@ return function (_, url)
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="39">
+                <Item class="ModuleScript" referent="57">
                   <Properties>
                     <string name="Name">getPlayerPlaceInstance</string>
                     <string name="Source">return {
@@ -526,7 +1469,7 @@ end</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="40">
+                <Item class="ModuleScript" referent="58">
                   <Properties>
                     <string name="Name">getPlayerPlaceInstanceServer</string>
                     <string name="Source">local TeleportService = game:GetService("TeleportService")
@@ -558,7 +1501,7 @@ return function (_, playerId, format)
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="41">
+                <Item class="ModuleScript" referent="59">
                   <Properties>
                     <string name="Name">position</string>
                     <string name="Source">local Players = game:GetService("Players")
@@ -589,7 +1532,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="42">
+                <Item class="ModuleScript" referent="60">
                   <Properties>
                     <string name="Name">thru</string>
                     <string name="Source">return {
@@ -627,7 +1570,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="43">
+                <Item class="ModuleScript" referent="61">
                   <Properties>
                     <string name="Name">uptime</string>
                     <string name="Source">return {
@@ -639,7 +1582,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="44">
+                <Item class="ModuleScript" referent="62">
                   <Properties>
                     <string name="Name">uptimeServer</string>
                     <string name="Source">local startTime = os.time()
@@ -655,7 +1598,7 @@ return function ()
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="45">
+                <Item class="ModuleScript" referent="63">
                   <Properties>
                     <string name="Name">version</string>
                     <string name="Source"><![CDATA[local version = "v1.9.0"
@@ -674,11 +1617,11 @@ return {
                   </Properties>
                 </Item>
               </Item>
-              <Item class="Folder" referent="46">
+              <Item class="Folder" referent="64">
                 <Properties>
                   <string name="Name">Utility</string>
                 </Properties>
-                <Item class="ModuleScript" referent="47">
+                <Item class="ModuleScript" referent="65">
                   <Properties>
                     <string name="Name">alias</string>
                     <string name="Source">return {
@@ -710,7 +1653,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="48">
+                <Item class="ModuleScript" referent="66">
                   <Properties>
                     <string name="Name">bind</string>
                     <string name="Source">local UserInputService = game:GetService("UserInputService")
@@ -780,7 +1723,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="49">
+                <Item class="ModuleScript" referent="67">
                   <Properties>
                     <string name="Name">clear</string>
                     <string name="Source"><![CDATA[local Players = game:GetService("Players")
@@ -809,7 +1752,7 @@ return {
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="50">
+                <Item class="ModuleScript" referent="68">
                   <Properties>
                     <string name="Name">echo</string>
                     <string name="Source">return {
@@ -831,7 +1774,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="51">
+                <Item class="ModuleScript" referent="69">
                   <Properties>
                     <string name="Name">edit</string>
                     <string name="Source">local Players = game:GetService("Players")
@@ -915,7 +1858,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="52">
+                <Item class="ModuleScript" referent="70">
                   <Properties>
                     <string name="Name">history</string>
                     <string name="Source">return {
@@ -948,7 +1891,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="53">
+                <Item class="ModuleScript" referent="71">
                   <Properties>
                     <string name="Name">hover</string>
                     <string name="Source">local Players = game:GetService("Players")
@@ -974,7 +1917,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="54">
+                <Item class="ModuleScript" referent="72">
                   <Properties>
                     <string name="Name">jsonArrayDecode</string>
                     <string name="Source">local HttpService = game:GetService("HttpService")
@@ -1004,7 +1947,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="55">
+                <Item class="ModuleScript" referent="73">
                   <Properties>
                     <string name="Name">jsonArrayEncode</string>
                     <string name="Source">local HttpService = game:GetService("HttpService")
@@ -1028,7 +1971,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="56">
+                <Item class="ModuleScript" referent="74">
                   <Properties>
                     <string name="Name">len</string>
                     <string name="Source">return {
@@ -1050,7 +1993,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="57">
+                <Item class="ModuleScript" referent="75">
                   <Properties>
                     <string name="Name">math</string>
                     <string name="Source"><![CDATA[return {
@@ -1091,7 +2034,7 @@ return {
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="58">
+                <Item class="ModuleScript" referent="76">
                   <Properties>
                     <string name="Name">pick</string>
                     <string name="Source">return {
@@ -1118,7 +2061,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="59">
+                <Item class="ModuleScript" referent="77">
                   <Properties>
                     <string name="Name">rand</string>
                     <string name="Source">return {
@@ -1146,7 +2089,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="60">
+                <Item class="ModuleScript" referent="78">
                   <Properties>
                     <string name="Name">replace</string>
                     <string name="Source">return {
@@ -1183,7 +2126,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="61">
+                <Item class="ModuleScript" referent="79">
                   <Properties>
                     <string name="Name">resolve</string>
                     <string name="Source">return {
@@ -1220,7 +2163,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="62">
+                <Item class="ModuleScript" referent="80">
                   <Properties>
                     <string name="Name">run</string>
                     <string name="Source">return {
@@ -1245,7 +2188,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="63">
+                <Item class="ModuleScript" referent="81">
                   <Properties>
                     <string name="Name">runLines</string>
                     <string name="Source">return {
@@ -1288,7 +2231,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="64">
+                <Item class="ModuleScript" referent="82">
                   <Properties>
                     <string name="Name">runif</string>
                     <string name="Source">local conditions = {
@@ -1346,7 +2289,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="65">
+                <Item class="ModuleScript" referent="83">
                   <Properties>
                     <string name="Name">unbind</string>
                     <string name="Source">return {
@@ -1376,7 +2319,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="66">
+                <Item class="ModuleScript" referent="84">
                   <Properties>
                     <string name="Name">var</string>
                     <string name="Source">return {
@@ -1404,7 +2347,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="67">
+                <Item class="ModuleScript" referent="85">
                   <Properties>
                     <string name="Name">varServer</string>
                     <string name="Source">local DataStoreService = game:GetService("DataStoreService")
@@ -1456,7 +2399,7 @@ return function (context, key)
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="68">
+                <Item class="ModuleScript" referent="86">
                   <Properties>
                     <string name="Name">varSet</string>
                     <string name="Source">return {
@@ -1484,7 +2427,7 @@ end</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="69">
+                <Item class="ModuleScript" referent="87">
                   <Properties>
                     <string name="Name">varSetServer</string>
                     <string name="Source"><![CDATA[local DataStoreService = game:GetService("DataStoreService")
@@ -1541,7 +2484,7 @@ end
                   </Properties>
                 </Item>
               </Item>
-              <Item class="ModuleScript" referent="70">
+              <Item class="ModuleScript" referent="88">
                 <Properties>
                   <string name="Name">help</string>
                   <string name="Source"><![CDATA[local ARGUMENT_SHORTHANDS = [[
@@ -1606,11 +2549,11 @@ return {
                 </Properties>
               </Item>
             </Item>
-            <Item class="Folder" referent="71">
+            <Item class="Folder" referent="89">
               <Properties>
                 <string name="Name">BuiltInTypes</string>
               </Properties>
-              <Item class="ModuleScript" referent="72">
+              <Item class="ModuleScript" referent="90">
                 <Properties>
                   <string name="Name">BindableResource</string>
                   <string name="Source"><![CDATA[return function (registry)
@@ -1619,7 +2562,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="73">
+              <Item class="ModuleScript" referent="91">
                 <Properties>
                   <string name="Name">BrickColor</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -1703,7 +2646,7 @@ return function(registry)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="74">
+              <Item class="ModuleScript" referent="92">
                 <Properties>
                   <string name="Name">Color3</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -1761,7 +2704,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="75">
+              <Item class="ModuleScript" referent="93">
                 <Properties>
                   <string name="Name">Command</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -1792,7 +2735,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="76">
+              <Item class="ModuleScript" referent="94">
                 <Properties>
                   <string name="Name">ConditionFunction</string>
                   <string name="Source"><![CDATA[return function (registry)
@@ -1801,7 +2744,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="77">
+              <Item class="ModuleScript" referent="95">
                 <Properties>
                   <string name="Name">Duration</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -1919,7 +2862,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="78">
+              <Item class="ModuleScript" referent="96">
                 <Properties>
                   <string name="Name">MathOperator</string>
                   <string name="Source"><![CDATA[return function(registry)
@@ -1965,7 +2908,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="79">
+              <Item class="ModuleScript" referent="97">
                 <Properties>
                   <string name="Name">Player</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -2004,7 +2947,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="80">
+              <Item class="ModuleScript" referent="98">
                 <Properties>
                   <string name="Name">PlayerId</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -2065,7 +3008,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="81">
+              <Item class="ModuleScript" referent="99">
                 <Properties>
                   <string name="Name">Primitives</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -2146,7 +3089,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="82">
+              <Item class="ModuleScript" referent="100">
                 <Properties>
                   <string name="Name">StoredKey</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -2186,7 +3129,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="83">
+              <Item class="ModuleScript" referent="101">
                 <Properties>
                   <string name="Name">Team</string>
                   <string name="Source">local Teams = game:GetService("Teams")
@@ -2244,7 +3187,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="84">
+              <Item class="ModuleScript" referent="102">
                 <Properties>
                   <string name="Name">Type</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -2275,7 +3218,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="85">
+              <Item class="ModuleScript" referent="103">
                 <Properties>
                   <string name="Name">URL</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -2301,7 +3244,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="86">
+              <Item class="ModuleScript" referent="104">
                 <Properties>
                   <string name="Name">UserInput</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -2338,7 +3281,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="87">
+              <Item class="ModuleScript" referent="105">
                 <Properties>
                   <string name="Name">Vector</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -2375,7 +3318,7 @@ end</string>
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="88">
+            <Item class="ModuleScript" referent="106">
               <Properties>
                 <string name="Name">CmdrClient</string>
                 <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -2506,7 +3449,7 @@ require(script.DefaultEventHandlers)(Cmdr)
 return Cmdr
 ]]></string>
               </Properties>
-              <Item class="ModuleScript" referent="89">
+              <Item class="ModuleScript" referent="107">
                 <Properties>
                   <string name="Name">CmdrInterface</string>
                   <string name="Source"><![CDATA[-- Here be dragons
@@ -2662,7 +3605,7 @@ return function (Cmdr)
 end
 ]]></string>
                 </Properties>
-                <Item class="ModuleScript" referent="90">
+                <Item class="ModuleScript" referent="108">
                   <Properties>
                     <string name="Name">AutoComplete</string>
                     <string name="Source"><![CDATA[-- luacheck: ignore 212
@@ -2849,7 +3792,7 @@ end
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="91">
+                <Item class="ModuleScript" referent="109">
                   <Properties>
                     <string name="Name">Window</string>
                     <string name="Source"><![CDATA[-- Here be dragons
@@ -3209,7 +4152,7 @@ return Window
                   </Properties>
                 </Item>
               </Item>
-              <Item class="ModuleScript" referent="92">
+              <Item class="ModuleScript" referent="110">
                 <Properties>
                   <string name="Name">DefaultEventHandlers</string>
                   <string name="Source">local StarterGui = game:GetService("StarterGui")
@@ -3230,7 +4173,7 @@ end</string>
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="93">
+            <Item class="ModuleScript" referent="111">
               <Properties>
                 <string name="Name">CreateGui</string>
                 <string name="Source">return function ()
@@ -3445,7 +4388,7 @@ end</string>
 end</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="94">
+            <Item class="ModuleScript" referent="112">
               <Properties>
                 <string name="Name">Initialize</string>
                 <string name="Source"><![CDATA[local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -3498,11 +4441,11 @@ end
 ]]></string>
               </Properties>
             </Item>
-            <Item class="Folder" referent="95">
+            <Item class="Folder" referent="113">
               <Properties>
                 <string name="Name">Shared</string>
               </Properties>
-              <Item class="ModuleScript" referent="96">
+              <Item class="ModuleScript" referent="114">
                 <Properties>
                   <string name="Name">Argument</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Util)
@@ -3762,7 +4705,7 @@ return Argument
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="97">
+              <Item class="ModuleScript" referent="115">
                 <Properties>
                   <string name="Name">Command</string>
                   <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -3990,7 +4933,7 @@ return Command
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="98">
+              <Item class="ModuleScript" referent="116">
                 <Properties>
                   <string name="Name">Dispatcher</string>
                   <string name="Source">local RunService = game:GetService("RunService")
@@ -4185,7 +5128,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="99">
+              <Item class="ModuleScript" referent="117">
                 <Properties>
                   <string name="Name">Registry</string>
                   <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -4478,7 +5421,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="100">
+              <Item class="ModuleScript" referent="118">
                 <Properties>
                   <string name="Name">Util</string>
                   <string name="Source"><![CDATA[local TextService = game:GetService("TextService")
@@ -5033,11 +5976,11 @@ return Util
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="101">
+        <Item class="Folder" referent="119">
           <Properties>
             <string name="Name">evaera_promise@4.0.0</string>
           </Properties>
-          <Item class="ModuleScript" referent="102">
+          <Item class="ModuleScript" referent="120">
             <Properties>
               <string name="Name">promise</string>
               <string name="Source"><![CDATA[--[[
@@ -7112,11 +8055,11 @@ return Promise
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="103">
+        <Item class="Folder" referent="121">
           <Properties>
             <string name="Name">howmanysmall_janitor@1.15.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="104">
+          <Item class="ModuleScript" referent="122">
             <Properties>
               <string name="Name">janitor</string>
               <string name="Source"><![CDATA[-- Compiled with L+ C Edition
@@ -7921,7 +8864,7 @@ table.freeze(Janitor)
 return Janitor
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="105">
+            <Item class="ModuleScript" referent="123">
               <Properties>
                 <string name="Name">GetPromiseLibrary</string>
                 <string name="Source"><![CDATA[-- TODO: When Promise is on Wally, remove this in favor of just `script.Parent.Parent:FindFirstChild("Promise")`.
@@ -7974,7 +8917,7 @@ return GetPromiseLibrary
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="106">
+            <Item class="ModuleScript" referent="124">
               <Properties>
                 <string name="Name">RbxScriptConnection</string>
                 <string name="Source"><![CDATA[--[=[
@@ -8018,7 +8961,7 @@ return RbxScriptConnection
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="107">
+            <Item class="ModuleScript" referent="125">
               <Properties>
                 <string name="Name">Symbol</string>
                 <string name="Source"><![CDATA[-- This only exists because the LSP warns Key `__tostring` not found in type `table?`.
@@ -8038,11 +8981,11 @@ return Symbol
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="108">
+        <Item class="Folder" referent="126">
           <Properties>
             <string name="Name">roblox_roact@1.4.4</string>
           </Properties>
-          <Item class="ModuleScript" referent="109">
+          <Item class="ModuleScript" referent="127">
             <Properties>
               <string name="Name">roact</string>
               <string name="Source"><![CDATA[--~strict
@@ -8096,7 +9039,7 @@ local Roact = strict({
 return Roact
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="110">
+            <Item class="ModuleScript" referent="128">
               <Properties>
                 <string name="Name">Binding</string>
                 <string name="Source"><![CDATA[local createSignal = require(script.Parent.createSignal)
@@ -8257,7 +9200,7 @@ return BindingInternalApi
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="111">
+            <Item class="ModuleScript" referent="129">
               <Properties>
                 <string name="Name">Component</string>
                 <string name="Source"><![CDATA[local assign = require(script.Parent.assign)
@@ -8775,12 +9718,12 @@ return Component
 ]]></string>
               </Properties>
             </Item>
-            <Item class="Folder" referent="112">
+            <Item class="Folder" referent="130">
               <Properties>
                 <string name="Name">Component.spec</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="113">
+            <Item class="ModuleScript" referent="131">
               <Properties>
                 <string name="Name">ComponentLifecyclePhase</string>
                 <string name="Source"><![CDATA[local Symbol = require(script.Parent.Symbol)
@@ -8805,7 +9748,7 @@ return ComponentLifecyclePhase
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="114">
+            <Item class="ModuleScript" referent="132">
               <Properties>
                 <string name="Name">Config</string>
                 <string name="Source"><![CDATA[--[[
@@ -8926,7 +9869,7 @@ return Config
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="115">
+            <Item class="ModuleScript" referent="133">
               <Properties>
                 <string name="Name">ElementKind</string>
                 <string name="Source"><![CDATA[--[[
@@ -8983,7 +9926,7 @@ return ElementKind
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="116">
+            <Item class="ModuleScript" referent="134">
               <Properties>
                 <string name="Name">ElementUtils</string>
                 <string name="Source"><![CDATA[--!strict
@@ -9091,7 +10034,7 @@ return ElementUtils
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="117">
+            <Item class="ModuleScript" referent="135">
               <Properties>
                 <string name="Name">GlobalConfig</string>
                 <string name="Source"><![CDATA[--[[
@@ -9104,7 +10047,7 @@ return Config.new()
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="118">
+            <Item class="ModuleScript" referent="136">
               <Properties>
                 <string name="Name">Logging</string>
                 <string name="Source"><![CDATA[--[[
@@ -9269,7 +10212,7 @@ return Logging
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="119">
+            <Item class="ModuleScript" referent="137">
               <Properties>
                 <string name="Name">None</string>
                 <string name="Source"><![CDATA[local Symbol = require(script.Parent.Symbol)
@@ -9282,7 +10225,7 @@ return None
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="120">
+            <Item class="ModuleScript" referent="138">
               <Properties>
                 <string name="Name">NoopRenderer</string>
                 <string name="Source"><![CDATA[--[[
@@ -9310,7 +10253,7 @@ return NoopRenderer
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="121">
+            <Item class="ModuleScript" referent="139">
               <Properties>
                 <string name="Name">Portal</string>
                 <string name="Source"><![CDATA[local Symbol = require(script.Parent.Symbol)
@@ -9321,11 +10264,11 @@ return Portal
 ]]></string>
               </Properties>
             </Item>
-            <Item class="Folder" referent="122">
+            <Item class="Folder" referent="140">
               <Properties>
                 <string name="Name">PropMarkers</string>
               </Properties>
-              <Item class="ModuleScript" referent="123">
+              <Item class="ModuleScript" referent="141">
                 <Properties>
                   <string name="Name">Change</string>
                   <string name="Source"><![CDATA[--[[
@@ -9369,7 +10312,7 @@ return Change
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="124">
+              <Item class="ModuleScript" referent="142">
                 <Properties>
                   <string name="Name">Children</string>
                   <string name="Source"><![CDATA[local Symbol = require(script.Parent.Parent.Symbol)
@@ -9380,7 +10323,7 @@ return Children
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="125">
+              <Item class="ModuleScript" referent="143">
                 <Properties>
                   <string name="Name">Event</string>
                   <string name="Source"><![CDATA[--[[
@@ -9427,7 +10370,7 @@ return Event
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="126">
+              <Item class="ModuleScript" referent="144">
                 <Properties>
                   <string name="Name">Ref</string>
                   <string name="Source"><![CDATA[local Symbol = require(script.Parent.Parent.Symbol)
@@ -9439,7 +10382,7 @@ return Ref
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="127">
+            <Item class="ModuleScript" referent="145">
               <Properties>
                 <string name="Name">PureComponent</string>
                 <string name="Source"><![CDATA[--[[
@@ -9486,7 +10429,7 @@ return PureComponent
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="128">
+            <Item class="ModuleScript" referent="146">
               <Properties>
                 <string name="Name">RobloxRenderer</string>
                 <string name="Source"><![CDATA[--[[
@@ -9774,7 +10717,7 @@ return RobloxRenderer
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="129">
+            <Item class="ModuleScript" referent="147">
               <Properties>
                 <string name="Name">SingleEventManager</string>
                 <string name="Source"><![CDATA[--[[
@@ -9925,7 +10868,7 @@ return SingleEventManager
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="130">
+            <Item class="ModuleScript" referent="148">
               <Properties>
                 <string name="Name">Symbol</string>
                 <string name="Source"><![CDATA[--!strict
@@ -9962,7 +10905,7 @@ return Symbol
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="131">
+            <Item class="ModuleScript" referent="149">
               <Properties>
                 <string name="Name">Type</string>
                 <string name="Source"><![CDATA[--[[
@@ -10016,7 +10959,7 @@ return Type
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="132">
+            <Item class="ModuleScript" referent="150">
               <Properties>
                 <string name="Name">assertDeepEqual</string>
                 <string name="Source"><![CDATA[--!strict
@@ -10091,7 +11034,7 @@ return assertDeepEqual
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="133">
+            <Item class="ModuleScript" referent="151">
               <Properties>
                 <string name="Name">assign</string>
                 <string name="Source"><![CDATA[local None = require(script.Parent.None)
@@ -10124,7 +11067,7 @@ return assign
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="134">
+            <Item class="ModuleScript" referent="152">
               <Properties>
                 <string name="Name">createContext</string>
                 <string name="Source"><![CDATA[local Symbol = require(script.Parent.Symbol)
@@ -10282,7 +11225,7 @@ return createContext
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="135">
+            <Item class="ModuleScript" referent="153">
               <Properties>
                 <string name="Name">createElement</string>
                 <string name="Source"><![CDATA[local Children = require(script.Parent.PropMarkers.Children)
@@ -10362,7 +11305,7 @@ return createElement
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="136">
+            <Item class="ModuleScript" referent="154">
               <Properties>
                 <string name="Name">createFragment</string>
                 <string name="Source"><![CDATA[local ElementKind = require(script.Parent.ElementKind)
@@ -10380,7 +11323,7 @@ return createFragment
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="137">
+            <Item class="ModuleScript" referent="155">
               <Properties>
                 <string name="Name">createReconciler</string>
                 <string name="Source"><![CDATA[--!nonstrict
@@ -10887,7 +11830,7 @@ return createReconciler
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="138">
+            <Item class="ModuleScript" referent="156">
               <Properties>
                 <string name="Name">createReconcilerCompat</string>
                 <string name="Source"><![CDATA[--[[
@@ -10940,7 +11883,7 @@ return createReconcilerCompat
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="139">
+            <Item class="ModuleScript" referent="157">
               <Properties>
                 <string name="Name">createRef</string>
                 <string name="Source"><![CDATA[--[[
@@ -10984,7 +11927,7 @@ return createRef
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="140">
+            <Item class="ModuleScript" referent="158">
               <Properties>
                 <string name="Name">createSignal</string>
                 <string name="Source"><![CDATA[--[[
@@ -11058,7 +12001,7 @@ return createSignal
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="141">
+            <Item class="ModuleScript" referent="159">
               <Properties>
                 <string name="Name">createSpy</string>
                 <string name="Source"><![CDATA[--[[
@@ -11142,7 +12085,7 @@ return createSpy
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="142">
+            <Item class="ModuleScript" referent="160">
               <Properties>
                 <string name="Name">forwardRef</string>
                 <string name="Source"><![CDATA[local assign = require(script.Parent.assign)
@@ -11176,7 +12119,7 @@ return forwardRef
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="143">
+            <Item class="ModuleScript" referent="161">
               <Properties>
                 <string name="Name">getDefaultInstanceProperty</string>
                 <string name="Source"><![CDATA[--[[
@@ -11236,7 +12179,7 @@ return getDefaultInstanceProperty
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="144">
+            <Item class="ModuleScript" referent="162">
               <Properties>
                 <string name="Name">internalAssert</string>
                 <string name="Source"><![CDATA[local function internalAssert(condition, message)
@@ -11249,7 +12192,7 @@ return internalAssert
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="145">
+            <Item class="ModuleScript" referent="163">
               <Properties>
                 <string name="Name">invalidSetStateMessages</string>
                 <string name="Source"><![CDATA[--[[
@@ -11293,7 +12236,7 @@ return invalidSetStateMessages
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="146">
+            <Item class="ModuleScript" referent="164">
               <Properties>
                 <string name="Name">oneChild</string>
                 <string name="Source"><![CDATA[--[[
@@ -11327,7 +12270,7 @@ return oneChild
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="147">
+            <Item class="ModuleScript" referent="165">
               <Properties>
                 <string name="Name">strict</string>
                 <string name="Source"><![CDATA[--!strict
@@ -11357,11 +12300,11 @@ return strict
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="148">
+        <Item class="Folder" referent="166">
           <Properties>
             <string name="Name">roblox_testez@0.4.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="149">
+          <Item class="ModuleScript" referent="167">
             <Properties>
               <string name="Name">testez</string>
               <string name="Source">local Expectation = require(script.Expectation)
@@ -11405,7 +12348,7 @@ local TestEZ = {
 
 return TestEZ</string>
             </Properties>
-            <Item class="ModuleScript" referent="150">
+            <Item class="ModuleScript" referent="168">
               <Properties>
                 <string name="Name">Context</string>
                 <string name="Source"><![CDATA[--[[
@@ -11437,7 +12380,7 @@ return Context
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="151">
+            <Item class="ModuleScript" referent="169">
               <Properties>
                 <string name="Name">Expectation</string>
                 <string name="Source"><![CDATA[--[[
@@ -11754,7 +12697,7 @@ return Expectation
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="152">
+            <Item class="ModuleScript" referent="170">
               <Properties>
                 <string name="Name">ExpectationContext</string>
                 <string name="Source"><![CDATA[local Expectation = require(script.Parent.Expectation)
@@ -11798,7 +12741,7 @@ return ExpectationContext
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="153">
+            <Item class="ModuleScript" referent="171">
               <Properties>
                 <string name="Name">LifecycleHooks</string>
                 <string name="Source"><![CDATA[local TestEnum = require(script.Parent.TestEnum)
@@ -11893,11 +12836,11 @@ return LifecycleHooks
 ]]></string>
               </Properties>
             </Item>
-            <Item class="Folder" referent="154">
+            <Item class="Folder" referent="172">
               <Properties>
                 <string name="Name">Reporters</string>
               </Properties>
-              <Item class="ModuleScript" referent="155">
+              <Item class="ModuleScript" referent="173">
                 <Properties>
                   <string name="Name">TeamCityReporter</string>
                   <string name="Source">local TestService = game:GetService("TestService")
@@ -12004,7 +12947,7 @@ end
 return TeamCityReporter</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="156">
+              <Item class="ModuleScript" referent="174">
                 <Properties>
                   <string name="Name">TextReporter</string>
                   <string name="Source">--[[
@@ -12115,7 +13058,7 @@ end
 return TextReporter</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="157">
+              <Item class="ModuleScript" referent="175">
                 <Properties>
                   <string name="Name">TextReporterQuiet</string>
                   <string name="Source">--[[
@@ -12218,7 +13161,7 @@ return TextReporterQuiet</string>
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="158">
+            <Item class="ModuleScript" referent="176">
               <Properties>
                 <string name="Name">TestBootstrap</string>
                 <string name="Source">--[[
@@ -12370,7 +13313,7 @@ end
 return TestBootstrap</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="159">
+            <Item class="ModuleScript" referent="177">
               <Properties>
                 <string name="Name">TestEnum</string>
                 <string name="Source">--[[
@@ -12403,7 +13346,7 @@ TestEnum.NodeModifier = {
 return TestEnum</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="160">
+            <Item class="ModuleScript" referent="178">
               <Properties>
                 <string name="Name">TestPlan</string>
                 <string name="Source"><![CDATA[--[[
@@ -12713,7 +13656,7 @@ return TestPlan
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="161">
+            <Item class="ModuleScript" referent="179">
               <Properties>
                 <string name="Name">TestPlanner</string>
                 <string name="Source">--[[
@@ -12758,7 +13701,7 @@ end
 return TestPlanner</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="162">
+            <Item class="ModuleScript" referent="180">
               <Properties>
                 <string name="Name">TestResults</string>
                 <string name="Source">--[[
@@ -12875,7 +13818,7 @@ end
 return TestResults</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="163">
+            <Item class="ModuleScript" referent="181">
               <Properties>
                 <string name="Name">TestRunner</string>
                 <string name="Source"><![CDATA[--[[
@@ -13069,7 +14012,7 @@ return TestRunner
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="164">
+            <Item class="ModuleScript" referent="182">
               <Properties>
                 <string name="Name">TestSession</string>
                 <string name="Source"><![CDATA[--[[
@@ -13320,32 +14263,32 @@ return TestSession
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="165">
+        <Item class="Folder" referent="183">
           <Properties>
             <string name="Name">sleitnick_comm@0.3.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="166">
+          <Item class="ModuleScript" referent="184">
             <Properties>
               <string name="Name">Option</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_option@1.0.4"]["option"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="167">
+          <Item class="ModuleScript" referent="185">
             <Properties>
               <string name="Name">Promise</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["evaera_promise@4.0.0"]["promise"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="168">
+          <Item class="ModuleScript" referent="186">
             <Properties>
               <string name="Name">Signal</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_signal@1.4.2"]["signal"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="169">
+          <Item class="ModuleScript" referent="187">
             <Properties>
               <string name="Name">comm</string>
               <string name="Source"><![CDATA[-- Comm
@@ -13385,7 +14328,7 @@ local Comm = {
 return Comm
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="170">
+            <Item class="ModuleScript" referent="188">
               <Properties>
                 <string name="Name">Client</string>
                 <string name="Source"><![CDATA[local Util = require(script.Parent.Util)
@@ -13525,7 +14468,7 @@ end
 return Client
 ]]></string>
               </Properties>
-              <Item class="ModuleScript" referent="171">
+              <Item class="ModuleScript" referent="189">
                 <Properties>
                   <string name="Name">ClientComm</string>
                   <string name="Source"><![CDATA[-- ClientComm
@@ -13763,7 +14706,7 @@ return ClientComm
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="172">
+              <Item class="ModuleScript" referent="190">
                 <Properties>
                   <string name="Name">ClientRemoteProperty</string>
                   <string name="Source"><![CDATA[-- ClientRemoteProperty
@@ -13928,7 +14871,7 @@ return ClientRemoteProperty
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="173">
+              <Item class="ModuleScript" referent="191">
                 <Properties>
                   <string name="Name">ClientRemoteSignal</string>
                   <string name="Source"><![CDATA[-- ClientRemoteSignal
@@ -14042,7 +14985,7 @@ return ClientRemoteSignal
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="174">
+            <Item class="ModuleScript" referent="192">
               <Properties>
                 <string name="Name">Server</string>
                 <string name="Source"><![CDATA[local Util = require(script.Parent.Util)
@@ -14186,7 +15129,7 @@ end
 return Server
 ]]></string>
               </Properties>
-              <Item class="ModuleScript" referent="175">
+              <Item class="ModuleScript" referent="193">
                 <Properties>
                   <string name="Name">RemoteProperty</string>
                   <string name="Source"><![CDATA[-- RemoteProperty
@@ -14487,7 +15430,7 @@ return RemoteProperty
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="176">
+              <Item class="ModuleScript" referent="194">
                 <Properties>
                   <string name="Name">RemoteSignal</string>
                   <string name="Source"><![CDATA[-- RemoteSignal
@@ -14692,7 +15635,7 @@ return RemoteSignal
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="177">
+              <Item class="ModuleScript" referent="195">
                 <Properties>
                   <string name="Name">ServerComm</string>
                   <string name="Source"><![CDATA[-- ServerComm
@@ -14904,7 +15847,7 @@ return ServerComm
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="178">
+            <Item class="ModuleScript" referent="196">
               <Properties>
                 <string name="Name">Types</string>
                 <string name="Source"><![CDATA[-- Types
@@ -14928,7 +15871,7 @@ return nil
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="179">
+            <Item class="ModuleScript" referent="197">
               <Properties>
                 <string name="Name">Util</string>
                 <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -14963,11 +15906,773 @@ return Util
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="180">
+        <Item class="Folder" referent="198">
+          <Properties>
+            <string name="Name">sleitnick_component@2.4.6</string>
+          </Properties>
+          <Item class="ModuleScript" referent="199">
+            <Properties>
+              <string name="Name">Promise</string>
+              <string name="Source"><![CDATA[return require(script.Parent.Parent["evaera_promise@4.0.0"]["promise"])
+]]></string>
+            </Properties>
+          </Item>
+          <Item class="ModuleScript" referent="200">
+            <Properties>
+              <string name="Name">Signal</string>
+              <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_signal@1.4.2"]["signal"])
+]]></string>
+            </Properties>
+          </Item>
+          <Item class="ModuleScript" referent="201">
+            <Properties>
+              <string name="Name">Symbol</string>
+              <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_symbol@2.0.1"]["symbol"])
+]]></string>
+            </Properties>
+          </Item>
+          <Item class="ModuleScript" referent="202">
+            <Properties>
+              <string name="Name">Trove</string>
+              <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_trove@0.4.2"]["trove"])
+]]></string>
+            </Properties>
+          </Item>
+          <Item class="ModuleScript" referent="203">
+            <Properties>
+              <string name="Name">component</string>
+              <string name="Source"><![CDATA[-- Component
+-- Stephen Leitnick
+-- November 26, 2021
+
+type AncestorList = { Instance }
+
+--[=[
+	@type ExtensionFn (component) -> ()
+	@within Component
+]=]
+type ExtensionFn = (any) -> ()
+
+--[=[
+	@type ExtensionShouldFn (component) -> boolean
+	@within Component
+]=]
+type ExtensionShouldFn = (any) -> boolean
+
+--[=[
+	@interface Extension
+	@within Component
+	.ShouldExtend ExtensionShouldFn?
+	.ShouldConstruct ExtensionShouldFn?
+	.Constructing ExtensionFn?
+	.Constructed ExtensionFn?
+	.Starting ExtensionFn?
+	.Started ExtensionFn?
+	.Stopping ExtensionFn?
+	.Stopped ExtensionFn?
+
+	An extension allows the ability to extend the behavior of
+	components. This is useful for adding injection systems or
+	extending the behavior of components by wrapping around
+	component lifecycle methods.
+
+	The `ShouldConstruct` function can be used to indicate
+	if the component should actually be created. This must
+	return `true` or `false`. A component with multiple
+	`ShouldConstruct` extension functions must have them _all_
+	return `true` in order for the component to be constructed.
+	The `ShouldConstruct` function runs _before_ all other
+	extension functions and component lifecycle methods.
+
+	The `ShouldExtend` function can be used to indicate if
+	the extension itself should be used. This can be used in
+	order to toggle an extension on/off depending on whatever
+	logic is appropriate. If no `ShouldExtend` function is
+	provided, the extension will always be used if provided
+	as an extension to the component.
+
+	As an example, an extension could be created to simply log
+	when the various lifecycle stages run on the component:
+
+	```lua
+	local Logger = {}
+	function Logger.Constructing(component) print("Constructing", component) end
+	function Logger.Constructed(component) print("Constructed", component) end
+	function Logger.Starting(component) print("Starting", component) end
+	function Logger.Started(component) print("Started", component) end
+	function Logger.Stopping(component) print("Stopping", component) end
+	function Logger.Stopped(component) print("Stopped", component) end
+
+	local MyComponent = Component.new({Tag = "MyComponent", Extensions = {Logger}})
+	```
+
+	Sometimes it is useful for an extension to control whether or
+	not a component should be constructed. For instance, if a
+	component on the client should only be instantiated for the
+	local player, an extension might look like this, assuming the
+	instance has an attribute linking it to the player's UserId:
+	```lua
+	local player = game:GetService("Players").LocalPlayer
+
+	local OnlyLocalPlayer = {}
+	function OnlyLocalPlayer.ShouldConstruct(component)
+		local ownerId = component.Instance:GetAttribute("OwnerId")
+		return ownerId == player.UserId
+	end
+
+	local MyComponent = Component.new({Tag = "MyComponent", Extensions = {OnlyLocalPlayer}})
+	```
+
+	It can also be useful for an extension itself to turn on/off
+	depending on various contexts. For example, let's take the
+	Logger from the first example, and only use that extension
+	if the bound instance has a Log attribute set to `true`:
+	```lua
+	function Logger.ShouldExtend(component)
+		return component.Instance:GetAttribute("Log") == true
+	end
+	```
+]=]
+type Extension = {
+	ShouldExtend: ExtensionShouldFn?,
+	ShouldConstruct: ExtensionShouldFn?,
+	Constructing: ExtensionFn?,
+	Constructed: ExtensionFn?,
+	Starting: ExtensionFn?,
+	Started: ExtensionFn?,
+	Stopping: ExtensionFn?,
+	Stopped: ExtensionFn?,
+}
+
+--[=[
+	@interface ComponentConfig
+	@within Component
+	.Tag string -- CollectionService tag to use
+	.Ancestors {Instance}? -- Optional array of ancestors in which components will be started
+	.Extensions {Extension}? -- Optional array of extension objects
+
+	Component configuration passed to `Component.new`.
+
+	- If no Ancestors option is included, it defaults to `{workspace, game.Players}`.
+	- If no Extensions option is included, it defaults to a blank table `{}`.
+]=]
+type ComponentConfig = {
+	Tag: string,
+	Ancestors: AncestorList?,
+	Extensions: { Extension }?,
+}
+
+--[=[
+	@within Component
+	@prop Started Signal
+	@tag Event
+	@tag Component Class
+
+	Fired when a new instance of a component is started.
+
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+
+	MyComponent.Started:Connect(function(component) end)
+	```
+]=]
+
+--[=[
+	@within Component
+	@prop Stopped Signal
+	@tag Event
+	@tag Component Class
+
+	Fired when an instance of a component is stopped.
+
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+
+	MyComponent.Stopped:Connect(function(component) end)
+	```
+]=]
+
+--[=[
+	@tag Component Instance
+	@within Component
+	@prop Instance Instance
+	
+	A reference back to the _Roblox_ instance from within a _component_ instance. When
+	a component instance is created, it is bound to a specific Roblox instance, which
+	will always be present through the `Instance` property.
+
+	```lua
+	MyComponent.Started:Connect(function(component)
+		local robloxInstance: Instance = component.Instance
+		print("Component is bound to " .. robloxInstance:GetFullName())
+	end)
+	```
+]=]
+
+local CollectionService = game:GetService("CollectionService")
+local RunService = game:GetService("RunService")
+
+local Signal = require(script.Parent.Signal)
+local Symbol = require(script.Parent.Symbol)
+local Trove = require(script.Parent.Trove)
+local Promise = require(script.Parent.Promise)
+
+local IS_SERVER = RunService:IsServer()
+local DEFAULT_ANCESTORS = { workspace, game:GetService("Players") }
+local DEFAULT_TIMEOUT = 60
+
+-- Symbol keys:
+local KEY_ANCESTORS = Symbol("Ancestors")
+local KEY_INST_TO_COMPONENTS = Symbol("InstancesToComponents")
+local KEY_LOCK_CONSTRUCT = Symbol("LockConstruct")
+local KEY_COMPONENTS = Symbol("Components")
+local KEY_TROVE = Symbol("Trove")
+local KEY_EXTENSIONS = Symbol("Extensions")
+local KEY_ACTIVE_EXTENSIONS = Symbol("ActiveExtensions")
+local KEY_STARTED = Symbol("Started")
+
+local renderId = 0
+local function NextRenderName(): string
+	renderId += 1
+	return "ComponentRender" .. tostring(renderId)
+end
+
+local function InvokeExtensionFn(component, fnName: string)
+	for _, extension in ipairs(component[KEY_ACTIVE_EXTENSIONS]) do
+		local fn = extension[fnName]
+		if type(fn) == "function" then
+			fn(component)
+		end
+	end
+end
+
+local function ShouldConstruct(component): boolean
+	for _, extension in ipairs(component[KEY_ACTIVE_EXTENSIONS]) do
+		local fn = extension.ShouldConstruct
+		if type(fn) == "function" then
+			local shouldConstruct = fn(component)
+			if not shouldConstruct then
+				return false
+			end
+		end
+	end
+	return true
+end
+
+local function GetActiveExtensions(component, extensionList)
+	local activeExtensions = table.create(#extensionList)
+	local allActive = true
+	for _, extension in ipairs(extensionList) do
+		local fn = extension.ShouldExtend
+		local shouldExtend = type(fn) ~= "function" or not not fn(component)
+		if shouldExtend then
+			table.insert(activeExtensions, extension)
+		else
+			allActive = false
+		end
+	end
+	return if allActive then extensionList else activeExtensions
+end
+
+--[=[
+	@class Component
+
+	Bind components to Roblox instances using the Component class and CollectionService tags.
+
+	To avoid confusion of terms:
+	- `Component` refers to this module.
+	- `Component Class` (e.g. `MyComponent` through this documentation) refers to a class created via `Component.new`
+	- `Component Instance` refers to an instance of a component class.
+	- `Roblox Instance` refers to the Roblox instance to which the component instance is bound.
+
+	Methods and properties are tagged with the above terms to help clarify the level at which they are used.
+]=]
+local Component = {}
+Component.__index = Component
+
+--[=[
+	@tag Component
+	@param config ComponentConfig
+	@return ComponentClass
+
+	Create a new custom Component class.
+
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+	```
+
+	A full example might look like this:
+
+	```lua
+	local MyComponent = Component.new({
+		Tag = "MyComponent",
+		Ancestors = {workspace},
+		Extensions = {Logger}, -- See Logger example within the example for the Extension type
+	})
+
+	local AnotherComponent = require(somewhere.AnotherComponent)
+
+	-- Optional if UpdateRenderStepped should use BindToRenderStep:
+	MyComponent.RenderPriority = Enum.RenderPriority.Camera.Value
+
+	function MyComponent:Construct()
+		self.MyData = "Hello"
+	end
+
+	function MyComponent:Start()
+		local another = self:GetComponent(AnotherComponent)
+		another:DoSomething()
+	end
+
+	function MyComponent:Stop()
+		self.MyData = "Goodbye"
+	end
+
+	function MyComponent:HeartbeatUpdate(dt)
+	end
+
+	function MyComponent:SteppedUpdate(dt)
+	end
+	
+	function MyComponent:RenderSteppedUpdate(dt)
+	end
+	```
+]=]
+function Component.new(config: ComponentConfig)
+	local customComponent = {}
+	customComponent.__index = customComponent
+	customComponent.__tostring = function()
+		return "Component<" .. config.Tag .. ">"
+	end
+	customComponent[KEY_ANCESTORS] = config.Ancestors or DEFAULT_ANCESTORS
+	customComponent[KEY_INST_TO_COMPONENTS] = {}
+	customComponent[KEY_COMPONENTS] = {}
+	customComponent[KEY_LOCK_CONSTRUCT] = {}
+	customComponent[KEY_TROVE] = Trove.new()
+	customComponent[KEY_EXTENSIONS] = config.Extensions or {}
+	customComponent[KEY_STARTED] = false
+	customComponent.Tag = config.Tag
+	customComponent.Started = customComponent[KEY_TROVE]:Construct(Signal)
+	customComponent.Stopped = customComponent[KEY_TROVE]:Construct(Signal)
+	setmetatable(customComponent, Component)
+	customComponent:_setup()
+	return customComponent
+end
+
+function Component:_instantiate(instance: Instance)
+	local component = setmetatable({}, self)
+	component.Instance = instance
+	component[KEY_ACTIVE_EXTENSIONS] = GetActiveExtensions(component, self[KEY_EXTENSIONS])
+	if not ShouldConstruct(component) then
+		return nil
+	end
+	InvokeExtensionFn(component, "Constructing")
+	if type(component.Construct) == "function" then
+		component:Construct()
+	end
+	InvokeExtensionFn(component, "Constructed")
+	return component
+end
+
+function Component:_setup()
+	local watchingInstances = {}
+
+	local function StartComponent(component)
+		InvokeExtensionFn(component, "Starting")
+		component:Start()
+		InvokeExtensionFn(component, "Started")
+		local hasHeartbeatUpdate = typeof(component.HeartbeatUpdate) == "function"
+		local hasSteppedUpdate = typeof(component.SteppedUpdate) == "function"
+		local hasRenderSteppedUpdate = typeof(component.RenderSteppedUpdate) == "function"
+		if hasHeartbeatUpdate then
+			component._heartbeatUpdate = RunService.Heartbeat:Connect(function(dt)
+				component:HeartbeatUpdate(dt)
+			end)
+		end
+		if hasSteppedUpdate then
+			component._steppedUpdate = RunService.Stepped:Connect(function(_, dt)
+				component:SteppedUpdate(dt)
+			end)
+		end
+		if hasRenderSteppedUpdate and not IS_SERVER then
+			if component.RenderPriority then
+				component._renderName = NextRenderName()
+				RunService:BindToRenderStep(component._renderName, component.RenderPriority, function(dt)
+					component:RenderSteppedUpdate(dt)
+				end)
+			else
+				component._renderSteppedUpdate = RunService.RenderStepped:Connect(function(dt)
+					component:RenderSteppedUpdate(dt)
+				end)
+			end
+		end
+		component[KEY_STARTED] = true
+		self.Started:Fire(component)
+	end
+
+	local function StopComponent(component)
+		if component._heartbeatUpdate then
+			component._heartbeatUpdate:Disconnect()
+		end
+		if component._steppedUpdate then
+			component._steppedUpdate:Disconnect()
+		end
+		if component._renderSteppedUpdate then
+			component._renderSteppedUpdate:Disconnect()
+		elseif component._renderName then
+			RunService:UnbindFromRenderStep(component._renderName)
+		end
+		InvokeExtensionFn(component, "Stopping")
+		component:Stop()
+		InvokeExtensionFn(component, "Stopped")
+		self.Stopped:Fire(component)
+	end
+
+	local function SafeConstruct(instance, id)
+		if self[KEY_LOCK_CONSTRUCT][instance] ~= id then
+			return nil
+		end
+		local component = self:_instantiate(instance)
+		if self[KEY_LOCK_CONSTRUCT][instance] ~= id then
+			return nil
+		end
+		return component
+	end
+
+	local function TryConstructComponent(instance)
+		if self[KEY_INST_TO_COMPONENTS][instance] then
+			return
+		end
+		local id = self[KEY_LOCK_CONSTRUCT][instance] or 0
+		id += 1
+		self[KEY_LOCK_CONSTRUCT][instance] = id
+		task.defer(function()
+			local component = SafeConstruct(instance, id)
+			if not component then
+				return
+			end
+			self[KEY_INST_TO_COMPONENTS][instance] = component
+			table.insert(self[KEY_COMPONENTS], component)
+			task.defer(function()
+				if self[KEY_INST_TO_COMPONENTS][instance] == component then
+					StartComponent(component)
+				end
+			end)
+		end)
+	end
+
+	local function TryDeconstructComponent(instance)
+		local component = self[KEY_INST_TO_COMPONENTS][instance]
+		if not component then
+			return
+		end
+		self[KEY_INST_TO_COMPONENTS][instance] = nil
+		self[KEY_LOCK_CONSTRUCT][instance] = nil
+		local components = self[KEY_COMPONENTS]
+		local index = table.find(components, component)
+		if index then
+			local n = #components
+			components[index] = components[n]
+			components[n] = nil
+		end
+		if component[KEY_STARTED] then
+			task.spawn(StopComponent, component)
+		end
+	end
+
+	local function StartWatchingInstance(instance)
+		if watchingInstances[instance] then
+			return
+		end
+		local function IsInAncestorList(): boolean
+			for _, parent in ipairs(self[KEY_ANCESTORS]) do
+				if instance:IsDescendantOf(parent) then
+					return true
+				end
+			end
+			return false
+		end
+		local ancestryChangedHandle = self[KEY_TROVE]:Connect(instance.AncestryChanged, function(_, parent)
+			if parent and IsInAncestorList() then
+				TryConstructComponent(instance)
+			else
+				TryDeconstructComponent(instance)
+			end
+		end)
+		watchingInstances[instance] = ancestryChangedHandle
+		if IsInAncestorList() then
+			TryConstructComponent(instance)
+		end
+	end
+
+	local function InstanceTagged(instance: Instance)
+		StartWatchingInstance(instance)
+	end
+
+	local function InstanceUntagged(instance: Instance)
+		local watchHandle = watchingInstances[instance]
+		if watchHandle then
+			watchHandle:Disconnect()
+			watchingInstances[instance] = nil
+		end
+		TryDeconstructComponent(instance)
+	end
+
+	self[KEY_TROVE]:Connect(CollectionService:GetInstanceAddedSignal(self.Tag), InstanceTagged)
+	self[KEY_TROVE]:Connect(CollectionService:GetInstanceRemovedSignal(self.Tag), InstanceUntagged)
+
+	local tagged = CollectionService:GetTagged(self.Tag)
+	for _, instance in ipairs(tagged) do
+		task.defer(InstanceTagged, instance)
+	end
+end
+
+--[=[
+	@tag Component Class
+	@return {Component}
+	Gets a table array of all existing component objects. For example,
+	if there was a component class linked to the "MyComponent" tag,
+	and three Roblox instances in your game had that same tag, then
+	calling `GetAll` would return the three component instances.
+
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+
+	-- ...
+
+	local components = MyComponent:GetAll()
+	for _,component in ipairs(components) do
+		component:DoSomethingHere()
+	end
+	```
+]=]
+function Component:GetAll()
+	return self[KEY_COMPONENTS]
+end
+
+--[=[
+	@tag Component Class
+	@return Component?
+
+	Gets an instance of a component class from the given Roblox
+	instance. Returns `nil` if not found.
+
+	```lua
+	local MyComponent = require(somewhere.MyComponent)
+
+	local myComponentInstance = MyComponent:FromInstance(workspace.SomeInstance)
+	```
+]=]
+function Component:FromInstance(instance: Instance)
+	return self[KEY_INST_TO_COMPONENTS][instance]
+end
+
+--[=[
+	@tag Component Class
+	@return Promise<ComponentInstance>
+
+	Resolves a promise once the component instance is present on a given
+	Roblox instance.
+
+	An optional `timeout` can be provided to reject the promise if it
+	takes more than `timeout` seconds to resolve. If no timeout is
+	supplied, `timeout` defaults to 60 seconds.
+
+	```lua
+	local MyComponent = require(somewhere.MyComponent)
+
+	MyComponent:WaitForInstance(workspace.SomeInstance):andThen(function(myComponentInstance)
+		-- Do something with the component class
+	end)
+	```
+]=]
+function Component:WaitForInstance(instance: Instance, timeout: number?)
+	local componentInstance = self:FromInstance(instance)
+	if componentInstance then
+		return Promise.resolve(componentInstance)
+	end
+	return Promise.fromEvent(self.Started, function(c)
+		local match = c.Instance == instance
+		if match then
+			componentInstance = c
+		end
+		return match
+	end)
+		:andThen(function()
+			return componentInstance
+		end)
+		:timeout(if type(timeout) == "number" then timeout else DEFAULT_TIMEOUT)
+end
+
+--[=[
+	@tag Component Class
+	`Construct` is called before the component is started, and should be used
+	to construct the component instance.
+
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+
+	function MyComponent:Construct()
+		self.SomeData = 32
+		self.OtherStuff = "HelloWorld"
+	end
+	```
+]=]
+function Component:Construct() end
+
+--[=[
+	@tag Component Class
+	`Start` is called when the component is started. At this point in time, it
+	is safe to grab other components also bound to the same instance.
+
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+	local AnotherComponent = require(somewhere.AnotherComponent)
+
+	function MyComponent:Start()
+		-- e.g., grab another component:
+		local another = self:GetComponent(AnotherComponent)
+	end
+	```
+]=]
+function Component:Start() end
+
+--[=[
+	@tag Component Class
+	`Stop` is called when the component is stopped. This occurs either when the
+	bound instance is removed from one of the whitelisted ancestors _or_ when
+	the matching tag is removed from the instance. This also means that the
+	instance _might_ be destroyed, and thus it is not safe to continue using
+	the bound instance (e.g. `self.Instance`) any longer.
+
+	This should be used to clean up the component.
+
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+
+	function MyComponent:Stop()
+		self.SomeStuff:Destroy()
+	end
+	```
+]=]
+function Component:Stop() end
+
+--[=[
+	@tag Component Instance
+	@param componentClass ComponentClass
+	@return Component?
+
+	Retrieves another component instance bound to the same
+	Roblox instance.
+
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+	local AnotherComponent = require(somewhere.AnotherComponent)
+
+	function MyComponent:Start()
+		local another = self:GetComponent(AnotherComponent)
+	end
+	```
+]=]
+function Component:GetComponent(componentClass)
+	return componentClass[KEY_INST_TO_COMPONENTS][self.Instance]
+end
+
+--[=[
+	@tag Component Class
+	@function HeartbeatUpdate
+	@param dt number
+	@within Component
+
+	If this method is present on a component, then it will be
+	automatically connected to `RunService.Heartbeat`.
+
+	:::note Method
+	This is a method, not a function. This is a limitation
+	of the documentation tool which should be fixed soon.
+	:::
+	
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+	
+	function MyComponent:HeartbeatUpdate(dt)
+	end
+	```
+]=]
+--[=[
+	@tag Component Class
+	@function SteppedUpdate
+	@param dt number
+	@within Component
+
+	If this method is present on a component, then it will be
+	automatically connected to `RunService.Stepped`.
+
+	:::note Method
+	This is a method, not a function. This is a limitation
+	of the documentation tool which should be fixed soon.
+	:::
+	
+	```lua
+	local MyComponent = Component.new({Tag = "MyComponent"})
+	
+	function MyComponent:SteppedUpdate(dt)
+	end
+	```
+]=]
+--[=[
+	@tag Component Class
+	@function RenderSteppedUpdate
+	@param dt number
+	@within Component
+	@client
+
+	If this method is present on a component, then it will be
+	automatically connected to `RunService.RenderStepped`. If
+	the `[Component].RenderPriority` field is found, then the
+	component will instead use `RunService:BindToRenderStep()`
+	to bind the function.
+
+	:::note Method
+	This is a method, not a function. This is a limitation
+	of the documentation tool which should be fixed soon.
+	:::
+	
+	```lua
+	-- Example that uses `RunService.RenderStepped` automatically:
+
+	local MyComponent = Component.new({Tag = "MyComponent"})
+	
+	function MyComponent:RenderSteppedUpdate(dt)
+	end
+	```
+	```lua
+	-- Example that uses `RunService:BindToRenderStep` automatically:
+	
+	local MyComponent = Component.new({Tag = "MyComponent"})
+
+	-- Defining a RenderPriority will force the component to use BindToRenderStep instead
+	MyComponent.RenderPriority = Enum.RenderPriority.Camera.Value
+	
+	function MyComponent:RenderSteppedUpdate(dt)
+	end
+	```
+]=]
+
+function Component:Destroy()
+	self[KEY_TROVE]:Destroy()
+end
+
+return Component
+]]></string>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Folder" referent="204">
           <Properties>
             <string name="Name">sleitnick_concur@0.1.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="181">
+          <Item class="ModuleScript" referent="205">
             <Properties>
               <string name="Name">concur</string>
               <string name="Source"><![CDATA[--!strict
@@ -15516,11 +17221,11 @@ return Concur
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="182">
+        <Item class="Folder" referent="206">
           <Properties>
             <string name="Name">sleitnick_enum-list@2.0.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="183">
+          <Item class="ModuleScript" referent="207">
             <Properties>
               <string name="Name">enum-list</string>
               <string name="Source"><![CDATA[--!strict
@@ -15631,25 +17336,25 @@ return EnumList
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="184">
+        <Item class="Folder" referent="208">
           <Properties>
             <string name="Name">sleitnick_knit@1.4.7</string>
           </Properties>
-          <Item class="ModuleScript" referent="185">
+          <Item class="ModuleScript" referent="209">
             <Properties>
               <string name="Name">Comm</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_comm@0.3.1"]["comm"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="186">
+          <Item class="ModuleScript" referent="210">
             <Properties>
               <string name="Name">Promise</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["evaera_promise@4.0.0"]["promise"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="187">
+          <Item class="ModuleScript" referent="211">
             <Properties>
               <string name="Name">knit</string>
               <string name="Source"><![CDATA[if game:GetService("RunService"):IsServer() then
@@ -15663,7 +17368,7 @@ else
 end
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="188">
+            <Item class="ModuleScript" referent="212">
               <Properties>
                 <string name="Name">KnitClient</string>
                 <string name="Source"><![CDATA[--[=[
@@ -16071,7 +17776,7 @@ return KnitClient
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="189">
+            <Item class="ModuleScript" referent="213">
               <Properties>
                 <string name="Name">KnitServer</string>
                 <string name="Source"><![CDATA[--[=[
@@ -16518,11 +18223,11 @@ return KnitServer
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="190">
+        <Item class="Folder" referent="214">
           <Properties>
             <string name="Name">sleitnick_log@0.1.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="191">
+          <Item class="ModuleScript" referent="215">
             <Properties>
               <string name="Name">log</string>
               <string name="Source"><![CDATA[-- Log
@@ -17275,11 +18980,11 @@ return Log
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="192">
+        <Item class="Folder" referent="216">
           <Properties>
             <string name="Name">sleitnick_option@1.0.4</string>
           </Properties>
-          <Item class="ModuleScript" referent="193">
+          <Item class="ModuleScript" referent="217">
             <Properties>
               <string name="Name">option</string>
               <string name="Source"><![CDATA[-- Option
@@ -17733,11 +19438,11 @@ return Option
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="194">
+        <Item class="Folder" referent="218">
           <Properties>
             <string name="Name">sleitnick_pid@1.0.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="195">
+          <Item class="ModuleScript" referent="219">
             <Properties>
               <string name="Name">pid</string>
               <string name="Source"><![CDATA[-- PID
@@ -17908,11 +19613,11 @@ return PID
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="196">
+        <Item class="Folder" referent="220">
           <Properties>
             <string name="Name">sleitnick_signal@1.4.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="197">
+          <Item class="ModuleScript" referent="221">
             <Properties>
               <string name="Name">signal</string>
               <string name="Source"><![CDATA[-- -----------------------------------------------------------------------------
@@ -18323,11 +20028,338 @@ return {
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="198">
+        <Item class="Folder" referent="222">
+          <Properties>
+            <string name="Name">sleitnick_streamable@1.2.4</string>
+          </Properties>
+          <Item class="ModuleScript" referent="223">
+            <Properties>
+              <string name="Name">Signal</string>
+              <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_signal@1.4.2"]["signal"])
+]]></string>
+            </Properties>
+          </Item>
+          <Item class="ModuleScript" referent="224">
+            <Properties>
+              <string name="Name">Trove</string>
+              <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_trove@0.4.2"]["trove"])
+]]></string>
+            </Properties>
+          </Item>
+          <Item class="ModuleScript" referent="225">
+            <Properties>
+              <string name="Name">streamable</string>
+              <string name="Source"><![CDATA[-- Streamable
+-- Stephen Leitnick
+-- November 08, 2021
+
+return {
+	Streamable = require(script.Streamable),
+	StreamableUtil = require(script.StreamableUtil),
+}
+]]></string>
+            </Properties>
+            <Item class="ModuleScript" referent="226">
+              <Properties>
+                <string name="Name">Streamable</string>
+                <string name="Source"><![CDATA[--!strict
+
+-- Streamable
+-- Stephen Leitnick
+-- March 03, 2021
+
+type StreamableWithInstance = {
+	Instance: Instance?,
+	[any]: any,
+}
+
+local Trove = require(script.Parent.Parent.Trove)
+local Signal = require(script.Parent.Parent.Signal)
+
+--[=[
+	@within Streamable
+	@prop Instance Instance
+	The current instance represented by the Streamable. If this
+	is being observed, it will always exist. If not currently
+	being observed, this will be `nil`.
+]=]
+
+--[=[
+	@class Streamable
+	@client
+	Because parts in StreamingEnabled games can stream in and out of existence at
+	any point in time, it is hard to write code to interact with them. This is
+	where Streamables come into play. Streamables will observe the existence of
+	a given instance, and will signal when the instance exists and does not
+	exist.
+
+	The API is very simple. Create a Streamable that points to a certain parent
+	and looks for a specific child instance (typically a BasePart). Then, call
+	the `Observe` method to observe when the instance streams in and out.
+
+	```lua
+	local Streamable = require(packages.Streamable).Streamable
+
+	-- Models might take a bit to load, but the model instance
+	-- is never removed, thus we can use WaitForChild.
+	local model = workspace:WaitForChild("MyModel")
+
+	-- Watch for a specific part in the model:
+	local partStreamable = Streamable.new(model, "SomePart")
+
+	partStreamable:Observe(function(part, trove)
+		print(part:GetFullName() .. " added")
+		-- Run code on the part here.
+		-- Use the trove to manage cleanup when the part goes away.
+		trove:Add(function()
+			-- General cleanup stuff
+			print(part.Name .. " removed")
+		end)
+	end)
+
+	-- Watch for the PrimaryPart of a model to exist:
+	local primaryStreamable = Streamable.primary(model)
+	primaryStreamable:Observe(function(primary, trove)
+		print("Model now has a PrimaryPart:", primary.Name)
+		trove:Add(function()
+			print("Model's PrimaryPart has been removed")
+		end)
+	end)
+
+	-- At any given point, accessing the Instance field will
+	-- reference the observed part, if it exists:
+	if partStreamable.Instance then
+		print("Streamable has its instance:", partStreamable.Instance)
+	end
+
+	-- When/if done, call Destroy on the streamable, which will
+	-- also clean up any observers:
+	partStreamable:Destroy()
+	primaryStreamable:Destroy()
+	```
+
+	For more information on the mechanics of how StreamingEnabled works
+	and what sort of behavior to expect, see the
+	[Content Streaming](https://developer.roblox.com/en-us/articles/content-streaming#technical-behavior)
+	page. It is important to understand that only BaseParts and their descendants are streamed in/out,
+	whereas other instances are loaded during the initial client load. It is also important to understand
+	that streaming only occurs on the client. The server has immediate access to everything right away.
+]=]
+local Streamable = {}
+Streamable.__index = Streamable
+
+--[=[
+	@return Streamable
+	@param parent Instance
+	@param childName string
+
+	Constructs a Streamable that watches for a direct child of name `childName`
+	within the `parent` Instance. Call `Observe` to observe the existence of
+	the child within the parent.
+]=]
+function Streamable.new(parent: Instance, childName: string)
+	local self: StreamableWithInstance = {}
+	setmetatable(self, Streamable)
+
+	self._trove = Trove.new()
+	self._shown = self._trove:Construct(Signal)
+	self._shownTrove = Trove.new()
+	self._trove:Add(self._shownTrove)
+
+	self.Instance = parent:FindFirstChild(childName)
+
+	local function OnInstanceSet()
+		local instance = self.Instance
+		if typeof(instance) == "Instance" then
+			self._shown:Fire(instance, self._shownTrove)
+			self._shownTrove:Connect(instance:GetPropertyChangedSignal("Parent"), function()
+				if not instance.Parent then
+					self._shownTrove:Clean()
+				end
+			end)
+			self._shownTrove:Add(function()
+				if self.Instance == instance then
+					self.Instance = nil
+				end
+			end)
+		end
+	end
+
+	local function OnChildAdded(child: Instance)
+		if child.Name == childName and not self.Instance then
+			self.Instance = child
+			OnInstanceSet()
+		end
+	end
+
+	self._trove:Connect(parent.ChildAdded, OnChildAdded)
+	if self.Instance then
+		OnInstanceSet()
+	end
+
+	return self
+end
+
+--[=[
+	@return Streamable
+	@param parent Model
+
+	Constructs a streamable that watches for the PrimaryPart of the
+	given `parent` Model.
+]=]
+function Streamable.primary(parent: Model)
+	local self: StreamableWithInstance = {}
+	setmetatable(self, Streamable)
+
+	self._trove = Trove.new()
+	self._shown = self._trove:Construct(Signal)
+	self._shownTrove = Trove.new()
+	self._trove:Add(self._shownTrove)
+
+	self.Instance = parent.PrimaryPart
+
+	local function OnPrimaryPartChanged()
+		local primaryPart = parent.PrimaryPart
+		self._shownTrove:Clean()
+		self.Instance = primaryPart
+		if primaryPart then
+			self._shown:Fire(primaryPart, self._shownTrove)
+		end
+	end
+
+	self._trove:Connect(parent:GetPropertyChangedSignal("PrimaryPart"), OnPrimaryPartChanged)
+	if self.Instance then
+		OnPrimaryPartChanged()
+	end
+
+	return self
+end
+
+--[=[
+	@param handler (instance: Instance, trove: Trove) -> nil
+	@return Connection
+
+	Observes the instance. The handler is called anytime the
+	instance comes into existence, and the trove given is
+	cleaned up when the instance goes away.
+
+	To stop observing, disconnect the returned connection.
+]=]
+function Streamable:Observe(handler)
+	if self.Instance then
+		task.spawn(handler, self.Instance, self._shownTrove)
+	end
+	return self._shown:Connect(handler)
+end
+
+--[=[
+	Destroys the Streamable. Any observers will be disconnected,
+	which also means that troves within observers will be cleaned
+	up. This should be called when a streamable is no longer needed.
+]=]
+function Streamable:Destroy()
+	self._trove:Destroy()
+end
+
+export type Streamable = typeof(Streamable.new(workspace, "X"))
+
+return Streamable
+]]></string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="227">
+              <Properties>
+                <string name="Name">StreamableUtil</string>
+                <string name="Source"><![CDATA[--!strict
+
+-- StreamableUtil
+-- Stephen Leitnick
+-- March 03, 2021
+
+local Trove = require(script.Parent.Parent.Trove)
+local _Streamable = require(script.Parent.Streamable)
+
+type Streamables = { _Streamable.Streamable }
+type CompoundHandler = (Streamables, any) -> nil
+
+--[=[
+	@class StreamableUtil
+	@client
+	A utility library for the Streamable class.
+
+	```lua
+	local StreamableUtil = require(packages.Streamable).StreamableUtil
+	```
+]=]
+local StreamableUtil = {}
+
+--[=[
+	@param streamables {Streamable}
+	@param handler ({[child: string]: Instance}, trove: Trove) -> nil
+	@return Trove
+
+	Creates a compound streamable around all the given streamables. The compound
+	streamable's observer handler will be fired once _all_ the given streamables
+	are in existence, and will be cleaned up when _any_ of the streamables
+	disappear.
+
+	```lua
+	local s1 = Streamable.new(workspace, "Part1")
+	local s2 = Streamable.new(workspace, "Part2")
+
+	local compoundTrove = StreamableUtil.Compound({S1 = s1, S2 = s2}, function(streamables, trove)
+		local part1 = streamables.S1.Instance
+		local part2 = streamables.S2.Instance
+		trove:Add(function()
+			print("Cleanup")
+		end)
+	end)
+	```
+]=]
+function StreamableUtil.Compound(streamables: Streamables, handler: CompoundHandler)
+	local compoundTrove = Trove.new()
+	local observeAllTrove = Trove.new()
+	local allAvailable = false
+	local function Check()
+		if allAvailable then
+			return
+		end
+		for _, streamable in pairs(streamables) do
+			if not streamable.Instance then
+				return
+			end
+		end
+		allAvailable = true
+		handler(streamables, observeAllTrove)
+	end
+	local function Cleanup()
+		if not allAvailable then
+			return
+		end
+		allAvailable = false
+		observeAllTrove:Clean()
+	end
+	for _, streamable in pairs(streamables) do
+		compoundTrove:Add(streamable:Observe(function(_child, trove)
+			Check()
+			trove:Add(Cleanup)
+		end))
+	end
+	compoundTrove:Add(Cleanup)
+	return compoundTrove
+end
+
+return StreamableUtil
+]]></string>
+              </Properties>
+            </Item>
+          </Item>
+        </Item>
+        <Item class="Folder" referent="228">
           <Properties>
             <string name="Name">sleitnick_symbol@2.0.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="199">
+          <Item class="ModuleScript" referent="229">
             <Properties>
               <string name="Name">symbol</string>
               <string name="Source"><![CDATA[-- Symbol
@@ -18390,11 +20422,11 @@ return Symbol
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="200">
+        <Item class="Folder" referent="230">
           <Properties>
             <string name="Name">sleitnick_table-util@1.2.0</string>
           </Properties>
-          <Item class="ModuleScript" referent="201">
+          <Item class="ModuleScript" referent="231">
             <Properties>
               <string name="Name">table-util</string>
               <string name="Source"><![CDATA[--!strict
@@ -19314,11 +21346,11 @@ return TableUtil
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="202">
+        <Item class="Folder" referent="232">
           <Properties>
             <string name="Name">sleitnick_task-queue@0.1.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="203">
+          <Item class="ModuleScript" referent="233">
             <Properties>
               <string name="Name">task-queue</string>
               <string name="Source"><![CDATA[--!strict
@@ -19420,18 +21452,18 @@ return TaskQueue
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="204">
+        <Item class="Folder" referent="234">
           <Properties>
             <string name="Name">sleitnick_timer@1.1.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="205">
+          <Item class="ModuleScript" referent="235">
             <Properties>
               <string name="Name">Signal</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_signal@1.4.2"]["signal"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="206">
+          <Item class="ModuleScript" referent="236">
             <Properties>
               <string name="Name">timer</string>
               <string name="Source"><![CDATA[-- Timer
@@ -19668,43 +21700,363 @@ return Timer
             </Properties>
           </Item>
         </Item>
-      </Item>
-      <Item class="ModuleScript" referent="207">
-        <Properties>
-          <string name="Name">cmdr</string>
-          <string name="Source"><![CDATA[return require(script.Parent._Index["evaera_cmdr@1.9.0"]["cmdr"])
+        <Item class="Folder" referent="237">
+          <Properties>
+            <string name="Name">sleitnick_trove@0.4.2</string>
+          </Properties>
+          <Item class="ModuleScript" referent="238">
+            <Properties>
+              <string name="Name">trove</string>
+              <string name="Source"><![CDATA[-- Trove
+-- Stephen Leitnick
+-- October 16, 2021
+
+local FN_MARKER = newproxy()
+local THREAD_MARKER = newproxy()
+
+local RunService = game:GetService("RunService")
+
+local function GetObjectCleanupFunction(object, cleanupMethod)
+	local t = typeof(object)
+	if t == "function" then
+		return FN_MARKER
+	elseif t == "thread" then
+		return THREAD_MARKER
+	end
+	if cleanupMethod then
+		return cleanupMethod
+	end
+	if t == "Instance" then
+		return "Destroy"
+	elseif t == "RBXScriptConnection" then
+		return "Disconnect"
+	elseif t == "table" then
+		if typeof(object.Destroy) == "function" then
+			return "Destroy"
+		elseif typeof(object.Disconnect) == "function" then
+			return "Disconnect"
+		end
+	end
+	error("Failed to get cleanup function for object " .. t .. ": " .. tostring(object), 3)
+end
+
+local function AssertPromiseLike(object)
+	if
+		type(object) ~= "table"
+		or type(object.getStatus) ~= "function"
+		or type(object.finally) ~= "function"
+		or type(object.cancel) ~= "function"
+	then
+		error("Did not receive a Promise as an argument", 3)
+	end
+end
+
+--[=[
+	@class Trove
+	A Trove is helpful for tracking any sort of object during
+	runtime that needs to get cleaned up at some point.
+]=]
+local Trove = {}
+Trove.__index = Trove
+
+--[=[
+	@return Trove
+	Constructs a Trove object.
+]=]
+function Trove.new()
+	local self = setmetatable({}, Trove)
+	self._objects = {}
+	return self
+end
+
+--[=[
+	@return Trove
+	Creates and adds another trove to itself. This is just shorthand
+	for `trove:Construct(Trove)`. This is useful for contexts where
+	the trove object is present, but the class itself isn't.
+
+	:::note
+	This does _not_ clone the trove. In other words, the objects in the
+	trove are not given to the new constructed trove. This is simply to
+	construct a new Trove and add it as an object to track.
+	:::
+
+	```lua
+	local trove = Trove.new()
+	local subTrove = trove:Extend()
+
+	trove:Clean() -- Cleans up the subTrove too
+	```
+]=]
+function Trove:Extend()
+	return self:Construct(Trove)
+end
+
+--[=[
+	Clones the given instance and adds it to the trove. Shorthand for
+	`trove:Add(instance:Clone())`.
+]=]
+function Trove:Clone(instance: Instance): Instance
+	return self:Add(instance:Clone())
+end
+
+--[=[
+	@param class table | (...any) -> any
+	@param ... any
+	@return any
+	Constructs a new object from either the
+	table or function given.
+
+	If a table is given, the table's `new`
+	function will be called with the given
+	arguments.
+
+	If a function is given, the function will
+	be called with the given arguments.
+	
+	The result from either of the two options
+	will be added to the trove.
+
+	This is shorthand for `trove:Add(SomeClass.new(...))`
+	and `trove:Add(SomeFunction(...))`.
+
+	```lua
+	local Signal = require(somewhere.Signal)
+
+	-- All of these are identical:
+	local s = trove:Construct(Signal)
+	local s = trove:Construct(Signal.new)
+	local s = trove:Construct(function() return Signal.new() end)
+	local s = trove:Add(Signal.new())
+
+	-- Even Roblox instances can be created:
+	local part = trove:Construct(Instance, "Part")
+	```
+]=]
+function Trove:Construct(class, ...)
+	local object = nil
+	local t = type(class)
+	if t == "table" then
+		object = class.new(...)
+	elseif t == "function" then
+		object = class(...)
+	end
+	return self:Add(object)
+end
+
+--[=[
+	@param signal RBXScriptSignal
+	@param fn (...: any) -> ()
+	@return RBXScriptConnection
+	Connects the function to the signal, adds the connection
+	to the trove, and then returns the connection.
+
+	This is shorthand for `trove:Add(signal:Connect(fn))`.
+
+	```lua
+	trove:Connect(workspace.ChildAdded, function(instance)
+		print(instance.Name .. " added to workspace")
+	end)
+	```
+]=]
+function Trove:Connect(signal, fn)
+	return self:Add(signal:Connect(fn))
+end
+
+--[=[
+	@param name string
+	@param priority number
+	@param fn (dt: number) -> ()
+	Calls `RunService:BindToRenderStep` and registers a function in the
+	trove that will call `RunService:UnbindFromRenderStep` on cleanup.
+
+	```lua
+	trove:BindToRenderStep("Test", Enum.RenderPriority.Last.Value, function(dt)
+		-- Do something
+	end)
+	```
+]=]
+function Trove:BindToRenderStep(name: string, priority: number, fn: (dt: number) -> ())
+	RunService:BindToRenderStep(name, priority, fn)
+	self:Add(function()
+		RunService:UnbindFromRenderStep(name)
+	end)
+end
+
+--[=[
+	@param promise Promise
+	@return Promise
+	Gives the promise to the trove, which will cancel the promise if the trove is cleaned up or if the promise
+	is removed. The exact promise is returned, thus allowing chaining.
+
+	```lua
+	trove:AddPromise(doSomethingThatReturnsAPromise())
+		:andThen(function()
+			print("Done")
+		end)
+	-- Will cancel the above promise (assuming it didn't resolve immediately)
+	trove:Clean()
+
+	local p = trove:AddPromise(doSomethingThatReturnsAPromise())
+	-- Will also cancel the promise
+	trove:Remove(p)
+	```
+
+	:::caution Promise v4 Only
+	This is only compatible with the [roblox-lua-promise](https://eryn.io/roblox-lua-promise/) library, version 4.
+	:::
+]=]
+function Trove:AddPromise(promise)
+	AssertPromiseLike(promise)
+	if promise:getStatus() == "Started" then
+		promise:finally(function()
+			return self:_findAndRemoveFromObjects(promise, false)
+		end)
+		self:Add(promise, "cancel")
+	end
+	return promise
+end
+
+--[=[
+	@param object any -- Object to track
+	@param cleanupMethod string? -- Optional cleanup name override
+	@return object: any
+	Adds an object to the trove. Once the trove is cleaned or
+	destroyed, the object will also be cleaned up.
+
+	The following types are accepted (e.g. `typeof(object)`):
+
+	| Type | Cleanup |
+	| ---- | ------- |
+	| `Instance` | `object:Destroy()` |
+	| `RBXScriptConnection` | `object:Disconnect()` |
+	| `function` | `object()` |
+	| `thread` | `coroutine.close(object)` |
+	| `table` | `object:Destroy()` _or_ `object:Disconnect()` |
+	| `table` with `cleanupMethod` | `object:<cleanupMethod>()` |
+
+	Returns the object added.
+
+	```lua
+	-- Add a part to the trove, then destroy the trove,
+	-- which will also destroy the part:
+	local part = Instance.new("Part")
+	trove:Add(part)
+	trove:Destroy()
+
+	-- Add a function to the trove:
+	trove:Add(function()
+		print("Cleanup!")
+	end)
+	trove:Destroy()
+
+	-- Standard cleanup from table:
+	local tbl = {}
+	function tbl:Destroy()
+		print("Cleanup")
+	end
+	trove:Add(tbl)
+
+	-- Custom cleanup from table:
+	local tbl = {}
+	function tbl:DoSomething()
+		print("Do something on cleanup")
+	end
+	trove:Add(tbl, "DoSomething")
+	```
+]=]
+function Trove:Add(object: any, cleanupMethod: string?): any
+	local cleanup = GetObjectCleanupFunction(object, cleanupMethod)
+	table.insert(self._objects, { object, cleanup })
+	return object
+end
+
+--[=[
+	@param object any -- Object to remove
+	Removes the object from the Trove and cleans it up.
+
+	```lua
+	local part = Instance.new("Part")
+	trove:Add(part)
+	trove:Remove(part)
+	```
+]=]
+function Trove:Remove(object: any): boolean
+	return self:_findAndRemoveFromObjects(object, true)
+end
+
+--[=[
+	Cleans up all objects in the trove. This is
+	similar to calling `Remove` on each object
+	within the trove.
+]=]
+function Trove:Clean()
+	for _, obj in ipairs(self._objects) do
+		self:_cleanupObject(obj[1], obj[2])
+	end
+	table.clear(self._objects)
+end
+
+function Trove:_findAndRemoveFromObjects(object: any, cleanup: boolean): boolean
+	local objects = self._objects
+	for i, obj in ipairs(objects) do
+		if obj[1] == object then
+			local n = #objects
+			objects[i] = objects[n]
+			objects[n] = nil
+			if cleanup then
+				self:_cleanupObject(obj[1], obj[2])
+			end
+			return true
+		end
+	end
+	return false
+end
+
+function Trove:_cleanupObject(object, cleanupMethod)
+	if cleanupMethod == FN_MARKER then
+		object()
+	elseif cleanupMethod == THREAD_MARKER then
+		coroutine.close(object)
+	else
+		object[cleanupMethod](object)
+	end
+end
+
+--[=[
+	@param instance Instance
+	@return RBXScriptConnection
+	Attaches the trove to a Roblox instance. Once this
+	instance is removed from the game (parent or ancestor's
+	parent set to `nil`), the trove will automatically
+	clean up.
+
+	:::caution
+	Will throw an error if `instance` is not a descendant
+	of the game hierarchy.
+	:::
+]=]
+function Trove:AttachToInstance(instance: Instance)
+	assert(instance:IsDescendantOf(game), "Instance is not a descendant of the game hierarchy")
+	return self:Connect(instance.Destroying, function()
+		self:Destroy()
+	end)
+end
+
+--[=[
+	Destroys the Trove object. Forces `Clean` to run.
+]=]
+function Trove:Destroy()
+	self:Clean()
+end
+
+return Trove
 ]]></string>
-        </Properties>
+            </Properties>
+          </Item>
+        </Item>
       </Item>
-      <Item class="ModuleScript" referent="208">
-        <Properties>
-          <string name="Name">janitor</string>
-          <string name="Source"><![CDATA[return require(script.Parent._Index["howmanysmall_janitor@1.15.1"]["janitor"])
-]]></string>
-        </Properties>
-      </Item>
-      <Item class="ModuleScript" referent="209">
-        <Properties>
-          <string name="Name">knit</string>
-          <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_knit@1.4.7"]["knit"])
-]]></string>
-        </Properties>
-      </Item>
-      <Item class="ModuleScript" referent="210">
-        <Properties>
-          <string name="Name">promise</string>
-          <string name="Source"><![CDATA[return require(script.Parent._Index["evaera_promise@4.0.0"]["promise"])
-]]></string>
-        </Properties>
-      </Item>
-      <Item class="ModuleScript" referent="211">
-        <Properties>
-          <string name="Name">roact</string>
-          <string name="Source"><![CDATA[return require(script.Parent._Index["roblox_roact@1.4.4"]["roact"])
-]]></string>
-        </Properties>
-      </Item>
-      <Item class="ModuleScript" referent="212">
+      <Item class="ModuleScript" referent="239">
         <Properties>
           <string name="Name">testez</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["roblox_testez@0.4.1"]["testez"])
@@ -19713,43 +22065,34 @@ return Timer
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="213">
+  <Item class="ServerScriptService" referent="240">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Folder" referent="214">
-      <Properties>
-        <string name="Name">Server</string>
-      </Properties>
-    </Item>
   </Item>
-  <Item class="SoundService" referent="215">
+  <Item class="SoundService" referent="241">
     <Properties>
       <string name="Name">SoundService</string>
       <bool name="RespectFilteringEnabled">true</bool>
     </Properties>
   </Item>
-  <Item class="StarterPlayer" referent="216">
+  <Item class="StarterPlayer" referent="242">
     <Properties>
       <string name="Name">StarterPlayer</string>
+      <float name="CharacterWalkSpeed">16</float>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="217">
+    <Item class="StarterPlayerScripts" referent="243">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="Folder" referent="218">
-        <Properties>
-          <string name="Name">Client</string>
-        </Properties>
-      </Item>
     </Item>
   </Item>
-  <Item class="Workspace" referent="219">
+  <Item class="Workspace" referent="244">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="FilteringEnabled">true</bool>
     </Properties>
-    <Item class="Part" referent="220">
+    <Item class="Part" referent="245">
       <Properties>
         <string name="Name">Baseplate</string>
         <bool name="Anchored">true</bool>

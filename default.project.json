@@ -11,17 +11,18 @@
     },
 
     "ReplicatedFirst": {
-      "Launch": {
-		"$className": "Folder",
-        "$path": "./src/Temp"
-      }
+		"$className": "ReplicatedFirst",
+		"$ignoreUnknownInstances": true,
+		"Launch": {
+			"$path": "src/Temp"
+		}
     },
 
     "ReplicatedStorage": {
-      "Common": {
-		"$className": "Folder",
-        "$path": "src/ReplicatedStorage"
-      },
+	  "$ignoreUnknownInstances": true,
+	  "Common": {
+		"$path": "src/Shared"
+	  },
       "Packages": {
 		"$className": "Folder",
         "$path": "Packages/"
@@ -29,17 +30,17 @@
     },
 
     "ServerScriptService": {
-      "Server": {
-        "$path": "src/Server"
-      }
+		"$className": "ServerScriptService",
+		"$ignoreUnknownInstances": true,
+		"$path": "src/Server"
     },
 
     "StarterPlayer": {
+	  "$properties": {
+		"CharacterWalkSpeed": 16
+	  },
       "StarterPlayerScripts": {
-        "Client": {
-		  "$className": "Folder",
-          "$path": "src/Client"
-        }
+		"$path": "src/Client"
       }
     },
 

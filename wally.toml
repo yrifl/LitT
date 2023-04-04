@@ -5,16 +5,18 @@ registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
 [dependencies] # My custom libs, you can edit.
-cmdr = "evaera/cmdr@1.9.0"
-promise = "evaera/promise@4.0.0"
+Cmdr = "evaera/cmdr@1.9.0"
+Promise = "evaera/promise@4.0.0"
 testez = "roblox/testez@0.4.1"
-janitor = "howmanysmall/janitor@1.15.1"
-roact = "roblox/roact@1.4.4"
+Janitor = "howmanysmall/janitor@1.15.1"
+Roact = "roblox/roact@1.4.4"
 
 # Sleitnick's framework
-knit = "sleitnick/knit@1.4.7"
+Knit = "sleitnick/knit@1.4.7"
 
 # Sleitnick's libs https://sleitnick.github.io/RbxUtil/
+Streamable = "sleitnick/streamable@1.2.4"
+Component = "sleitnick/component@2.4.6"
 TableUtil = "sleitnick/table-util@1.2.0"
 PID = "sleitnick/pid@1.0.2"
 Signal = "sleitnick/signal@1.4.2"
