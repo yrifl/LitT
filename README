@@ -14,4 +14,6 @@ List of installed tools:
 	- selene <Kampfkarren@selene>
 	- stylua <JohnnyMorganz@StyLua>
 
+Build the project use `rojo build`
+
 Thank you, bye.
