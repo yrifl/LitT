@@ -2,7 +2,7 @@
   "name": "LitT",
   "tree": {
     "$className": "DataModel",
-	
+
     "HttpService": {
       "$className": "HttpService",
       "$properties": {
@@ -11,36 +11,36 @@
     },
 
     "ReplicatedFirst": {
-		"$className": "ReplicatedFirst",
-		"Launch": {
-			"$path": "src/Temp"
-		}
+      "$className": "ReplicatedFirst",
+      "Launch": {
+        "$path": "src/Temp"
+      }
     },
 
     "ReplicatedStorage": {
-	  "Common": {
-		"$path": "src/Shared"
-	  },
+      "Common": {
+        "$path": "src/Shared"
+      },
       "Packages": {
-		"$className": "Folder",
+        "$className": "Folder",
         "$path": "Packages/"
       }
     },
 
     "ServerScriptService": {
-		"$properties": {
-			"LoadStringEnabled": true
-		},
-		"$className": "ServerScriptService",
-		"$path": "src/Server"
+      "$properties": {
+        "LoadStringEnabled": true
+      },
+      "$className": "ServerScriptService",
+      "$path": "src/Server"
     },
 
     "StarterPlayer": {
-	  "$properties": {
-		"CharacterWalkSpeed": 16
-	  },
+      "$properties": {
+        "CharacterWalkSpeed": 16
+      },
       "StarterPlayerScripts": {
-		"$path": "src/Client"
+        "$path": "src/Client"
       }
     },
 
@@ -71,24 +71,24 @@
         "FilteringEnabled": true
       }
     },
-	"Lighting": {
-		"$properties": {
-		  "Technology": "Voxel",
-		  "Outlines": false,
-		  "GlobalShadows": true,
-		  "Ambient": [
-			0.0,
-			0.0,
-			0.0
-		  ],
-		  "Brightness": 2.0
-		}
-	},
-	"SoundService": {
-		"$properties": {
-		  "RespectFilteringEnabled": true
-		}
-	}
+    "Lighting": {
+      "$properties": {
+        "Technology": "Voxel",
+        "Outlines": false,
+        "GlobalShadows": true,
+        "Ambient": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Brightness": 2.0
+      }
+    },
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
   },
   "globIgnorePaths": [
     "**/*.spec.lua"

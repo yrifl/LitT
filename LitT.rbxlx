@@ -43,22 +43,19 @@ P.Log("Startup", "Loading assets & scripts, hold on user!")
         <Item class="ModuleScript" referent="6">
           <Properties>
             <string name="Name">Slug</string>
-            <string name="Source"><![CDATA[local M = {
-
-}
+            <string name="Source"><![CDATA[local M = {}
 
 function M.Log(Head, Info)
-	print("[ ".. Head .." ]  :-> ".. Info)
+	print("[ " .. Head .. " ]  :-> " .. Info)
 end
 
 function M.Warn(Head, Info)
-	warn("[ ".. Head .." ]  :-> ".. Info)
+	warn("[ " .. Head .. " ]  :-> " .. Info)
 end
 
 function M.Error(Head, Info)
-	error("[ ".. Head .." ]  :-> ".. Info)
+	error("[ " .. Head .. " ]  :-> " .. Info)
 end
-
 
 return M
 ]]></string>
@@ -969,132 +966,139 @@ local RunService = game:GetService("RunService")
       </Properties>
       <Item class="ModuleScript" referent="20">
         <Properties>
+          <string name="Name">BridgeNet2</string>
+          <string name="Source"><![CDATA[return require(script.Parent._Index["ffrostflame_bridgenet2@0.1.0"]["bridgenet2"])
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="21">
+        <Properties>
           <string name="Name">Cmdr</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["evaera_cmdr@1.9.0"]["cmdr"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="21">
+      <Item class="ModuleScript" referent="22">
         <Properties>
           <string name="Name">Component</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_component@2.4.6"]["component"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="22">
+      <Item class="ModuleScript" referent="23">
         <Properties>
           <string name="Name">Concur</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_concur@0.1.2"]["concur"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="23">
+      <Item class="ModuleScript" referent="24">
         <Properties>
           <string name="Name">EnumList</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_enum-list@2.0.1"]["enum-list"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="24">
+      <Item class="ModuleScript" referent="25">
         <Properties>
           <string name="Name">Janitor</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["howmanysmall_janitor@1.15.1"]["janitor"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="25">
+      <Item class="ModuleScript" referent="26">
         <Properties>
           <string name="Name">Knit</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_knit@1.4.7"]["knit"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="26">
+      <Item class="ModuleScript" referent="27">
         <Properties>
           <string name="Name">Log</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_log@0.1.1"]["log"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="27">
+      <Item class="ModuleScript" referent="28">
         <Properties>
           <string name="Name">Option</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_option@1.0.4"]["option"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="28">
+      <Item class="ModuleScript" referent="29">
         <Properties>
           <string name="Name">PID</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_pid@1.0.2"]["pid"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="29">
+      <Item class="ModuleScript" referent="30">
         <Properties>
           <string name="Name">Promise</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["evaera_promise@4.0.0"]["promise"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="30">
+      <Item class="ModuleScript" referent="31">
         <Properties>
           <string name="Name">Roact</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["roblox_roact@1.4.4"]["roact"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="31">
+      <Item class="ModuleScript" referent="32">
         <Properties>
           <string name="Name">Signal</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_signal@1.4.2"]["signal"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="32">
+      <Item class="ModuleScript" referent="33">
         <Properties>
           <string name="Name">Streamable</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_streamable@1.2.4"]["streamable"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="33">
+      <Item class="ModuleScript" referent="34">
         <Properties>
           <string name="Name">Symbol</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_symbol@2.0.1"]["symbol"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="34">
+      <Item class="ModuleScript" referent="35">
         <Properties>
           <string name="Name">TableUtil</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_table-util@1.2.0"]["table-util"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="35">
+      <Item class="ModuleScript" referent="36">
         <Properties>
           <string name="Name">TaskQueue</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_task-queue@0.1.1"]["task-queue"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="36">
+      <Item class="ModuleScript" referent="37">
         <Properties>
           <string name="Name">Timer</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["sleitnick_timer@1.1.2"]["timer"])
 ]]></string>
         </Properties>
       </Item>
-      <Item class="Folder" referent="37">
+      <Item class="Folder" referent="38">
         <Properties>
           <string name="Name">_Index</string>
         </Properties>
-        <Item class="Folder" referent="38">
+        <Item class="Folder" referent="39">
           <Properties>
             <string name="Name">evaera_cmdr@1.9.0</string>
           </Properties>
-          <Item class="ModuleScript" referent="39">
+          <Item class="ModuleScript" referent="40">
             <Properties>
               <string name="Name">cmdr</string>
               <string name="Source">local RunService = game:GetService("RunService")
@@ -1135,15 +1139,15 @@ end
 
 return Cmdr</string>
             </Properties>
-            <Item class="Folder" referent="40">
+            <Item class="Folder" referent="41">
               <Properties>
                 <string name="Name">BuiltInCommands</string>
               </Properties>
-              <Item class="Folder" referent="41">
+              <Item class="Folder" referent="42">
                 <Properties>
                   <string name="Name">Admin</string>
                 </Properties>
-                <Item class="ModuleScript" referent="42">
+                <Item class="ModuleScript" referent="43">
                   <Properties>
                     <string name="Name">announce</string>
                     <string name="Source">return {
@@ -1161,7 +1165,7 @@ return Cmdr</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="43">
+                <Item class="ModuleScript" referent="44">
                   <Properties>
                     <string name="Name">announceServer</string>
                     <string name="Source">local TextService = game:GetService("TextService")
@@ -1181,7 +1185,7 @@ return function (context, text)
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="44">
+                <Item class="ModuleScript" referent="45">
                   <Properties>
                     <string name="Name">gotoPlace</string>
                     <string name="Source">return {
@@ -1214,7 +1218,7 @@ end</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="45">
+                <Item class="ModuleScript" referent="46">
                   <Properties>
                     <string name="Name">gotoPlaceServer</string>
                     <string name="Source"><![CDATA[local TeleportService = game:GetService("TeleportService")
@@ -1243,7 +1247,7 @@ end
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="46">
+                <Item class="ModuleScript" referent="47">
                   <Properties>
                     <string name="Name">kick</string>
                     <string name="Source">return {
@@ -1261,7 +1265,7 @@ end
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="47">
+                <Item class="ModuleScript" referent="48">
                   <Properties>
                     <string name="Name">kickServer</string>
                     <string name="Source">return function (_, players)
@@ -1273,7 +1277,7 @@ end
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="48">
+                <Item class="ModuleScript" referent="49">
                   <Properties>
                     <string name="Name">kill</string>
                     <string name="Source">return {
@@ -1291,7 +1295,7 @@ end</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="49">
+                <Item class="ModuleScript" referent="50">
                   <Properties>
                     <string name="Name">killServer</string>
                     <string name="Source">return function (_, players)
@@ -1305,7 +1309,7 @@ end</string>
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="50">
+                <Item class="ModuleScript" referent="51">
                   <Properties>
                     <string name="Name">respawn</string>
                     <string name="Source"><![CDATA[return {
@@ -1326,7 +1330,7 @@ end</string>
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="51">
+                <Item class="ModuleScript" referent="52">
                   <Properties>
                     <string name="Name">respawnServer</string>
                     <string name="Source"><![CDATA[return function(_, players)
@@ -1340,7 +1344,7 @@ end
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="52">
+                <Item class="ModuleScript" referent="53">
                   <Properties>
                     <string name="Name">teleport</string>
                     <string name="Source">return {
@@ -1367,7 +1371,7 @@ end
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="53">
+                <Item class="ModuleScript" referent="54">
                   <Properties>
                     <string name="Name">teleportServer</string>
                     <string name="Source"><![CDATA[return function (_, fromPlayers, destination)
@@ -1395,11 +1399,11 @@ end
                   </Properties>
                 </Item>
               </Item>
-              <Item class="Folder" referent="54">
+              <Item class="Folder" referent="55">
                 <Properties>
                   <string name="Name">Debug</string>
                 </Properties>
-                <Item class="ModuleScript" referent="55">
+                <Item class="ModuleScript" referent="56">
                   <Properties>
                     <string name="Name">blink</string>
                     <string name="Source">return {
@@ -1427,7 +1431,7 @@ end
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="56">
+                <Item class="ModuleScript" referent="57">
                   <Properties>
                     <string name="Name">fetch</string>
                     <string name="Source">return {
@@ -1445,7 +1449,7 @@ end
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="57">
+                <Item class="ModuleScript" referent="58">
                   <Properties>
                     <string name="Name">fetchServer</string>
                     <string name="Source">local HttpService = game:GetService("HttpService")
@@ -1455,7 +1459,7 @@ return function (_, url)
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="58">
+                <Item class="ModuleScript" referent="59">
                   <Properties>
                     <string name="Name">getPlayerPlaceInstance</string>
                     <string name="Source">return {
@@ -1481,7 +1485,7 @@ end</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="59">
+                <Item class="ModuleScript" referent="60">
                   <Properties>
                     <string name="Name">getPlayerPlaceInstanceServer</string>
                     <string name="Source">local TeleportService = game:GetService("TeleportService")
@@ -1513,7 +1517,7 @@ return function (_, playerId, format)
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="60">
+                <Item class="ModuleScript" referent="61">
                   <Properties>
                     <string name="Name">position</string>
                     <string name="Source">local Players = game:GetService("Players")
@@ -1544,7 +1548,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="61">
+                <Item class="ModuleScript" referent="62">
                   <Properties>
                     <string name="Name">thru</string>
                     <string name="Source">return {
@@ -1582,7 +1586,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="62">
+                <Item class="ModuleScript" referent="63">
                   <Properties>
                     <string name="Name">uptime</string>
                     <string name="Source">return {
@@ -1594,7 +1598,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="63">
+                <Item class="ModuleScript" referent="64">
                   <Properties>
                     <string name="Name">uptimeServer</string>
                     <string name="Source">local startTime = os.time()
@@ -1610,7 +1614,7 @@ return function ()
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="64">
+                <Item class="ModuleScript" referent="65">
                   <Properties>
                     <string name="Name">version</string>
                     <string name="Source"><![CDATA[local version = "v1.9.0"
@@ -1629,11 +1633,11 @@ return {
                   </Properties>
                 </Item>
               </Item>
-              <Item class="Folder" referent="65">
+              <Item class="Folder" referent="66">
                 <Properties>
                   <string name="Name">Utility</string>
                 </Properties>
-                <Item class="ModuleScript" referent="66">
+                <Item class="ModuleScript" referent="67">
                   <Properties>
                     <string name="Name">alias</string>
                     <string name="Source">return {
@@ -1665,7 +1669,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="67">
+                <Item class="ModuleScript" referent="68">
                   <Properties>
                     <string name="Name">bind</string>
                     <string name="Source">local UserInputService = game:GetService("UserInputService")
@@ -1735,7 +1739,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="68">
+                <Item class="ModuleScript" referent="69">
                   <Properties>
                     <string name="Name">clear</string>
                     <string name="Source"><![CDATA[local Players = game:GetService("Players")
@@ -1764,7 +1768,7 @@ return {
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="69">
+                <Item class="ModuleScript" referent="70">
                   <Properties>
                     <string name="Name">echo</string>
                     <string name="Source">return {
@@ -1786,7 +1790,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="70">
+                <Item class="ModuleScript" referent="71">
                   <Properties>
                     <string name="Name">edit</string>
                     <string name="Source">local Players = game:GetService("Players")
@@ -1870,7 +1874,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="71">
+                <Item class="ModuleScript" referent="72">
                   <Properties>
                     <string name="Name">history</string>
                     <string name="Source">return {
@@ -1903,7 +1907,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="72">
+                <Item class="ModuleScript" referent="73">
                   <Properties>
                     <string name="Name">hover</string>
                     <string name="Source">local Players = game:GetService("Players")
@@ -1929,7 +1933,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="73">
+                <Item class="ModuleScript" referent="74">
                   <Properties>
                     <string name="Name">jsonArrayDecode</string>
                     <string name="Source">local HttpService = game:GetService("HttpService")
@@ -1959,7 +1963,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="74">
+                <Item class="ModuleScript" referent="75">
                   <Properties>
                     <string name="Name">jsonArrayEncode</string>
                     <string name="Source">local HttpService = game:GetService("HttpService")
@@ -1983,7 +1987,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="75">
+                <Item class="ModuleScript" referent="76">
                   <Properties>
                     <string name="Name">len</string>
                     <string name="Source">return {
@@ -2005,7 +2009,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="76">
+                <Item class="ModuleScript" referent="77">
                   <Properties>
                     <string name="Name">math</string>
                     <string name="Source"><![CDATA[return {
@@ -2046,7 +2050,7 @@ return {
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="77">
+                <Item class="ModuleScript" referent="78">
                   <Properties>
                     <string name="Name">pick</string>
                     <string name="Source">return {
@@ -2073,7 +2077,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="78">
+                <Item class="ModuleScript" referent="79">
                   <Properties>
                     <string name="Name">rand</string>
                     <string name="Source">return {
@@ -2101,7 +2105,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="79">
+                <Item class="ModuleScript" referent="80">
                   <Properties>
                     <string name="Name">replace</string>
                     <string name="Source">return {
@@ -2138,7 +2142,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="80">
+                <Item class="ModuleScript" referent="81">
                   <Properties>
                     <string name="Name">resolve</string>
                     <string name="Source">return {
@@ -2175,7 +2179,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="81">
+                <Item class="ModuleScript" referent="82">
                   <Properties>
                     <string name="Name">run</string>
                     <string name="Source">return {
@@ -2200,7 +2204,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="82">
+                <Item class="ModuleScript" referent="83">
                   <Properties>
                     <string name="Name">runLines</string>
                     <string name="Source">return {
@@ -2243,7 +2247,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="83">
+                <Item class="ModuleScript" referent="84">
                   <Properties>
                     <string name="Name">runif</string>
                     <string name="Source">local conditions = {
@@ -2301,7 +2305,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="84">
+                <Item class="ModuleScript" referent="85">
                   <Properties>
                     <string name="Name">unbind</string>
                     <string name="Source">return {
@@ -2331,7 +2335,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="85">
+                <Item class="ModuleScript" referent="86">
                   <Properties>
                     <string name="Name">var</string>
                     <string name="Source">return {
@@ -2359,7 +2363,7 @@ return {
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="86">
+                <Item class="ModuleScript" referent="87">
                   <Properties>
                     <string name="Name">varServer</string>
                     <string name="Source">local DataStoreService = game:GetService("DataStoreService")
@@ -2411,7 +2415,7 @@ return function (context, key)
 end</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="87">
+                <Item class="ModuleScript" referent="88">
                   <Properties>
                     <string name="Name">varSet</string>
                     <string name="Source">return {
@@ -2439,7 +2443,7 @@ end</string>
 }</string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="88">
+                <Item class="ModuleScript" referent="89">
                   <Properties>
                     <string name="Name">varSetServer</string>
                     <string name="Source"><![CDATA[local DataStoreService = game:GetService("DataStoreService")
@@ -2496,7 +2500,7 @@ end
                   </Properties>
                 </Item>
               </Item>
-              <Item class="ModuleScript" referent="89">
+              <Item class="ModuleScript" referent="90">
                 <Properties>
                   <string name="Name">help</string>
                   <string name="Source"><![CDATA[local ARGUMENT_SHORTHANDS = [[
@@ -2561,11 +2565,11 @@ return {
                 </Properties>
               </Item>
             </Item>
-            <Item class="Folder" referent="90">
+            <Item class="Folder" referent="91">
               <Properties>
                 <string name="Name">BuiltInTypes</string>
               </Properties>
-              <Item class="ModuleScript" referent="91">
+              <Item class="ModuleScript" referent="92">
                 <Properties>
                   <string name="Name">BindableResource</string>
                   <string name="Source"><![CDATA[return function (registry)
@@ -2574,7 +2578,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="92">
+              <Item class="ModuleScript" referent="93">
                 <Properties>
                   <string name="Name">BrickColor</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -2658,7 +2662,7 @@ return function(registry)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="93">
+              <Item class="ModuleScript" referent="94">
                 <Properties>
                   <string name="Name">Color3</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -2716,7 +2720,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="94">
+              <Item class="ModuleScript" referent="95">
                 <Properties>
                   <string name="Name">Command</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -2747,7 +2751,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="95">
+              <Item class="ModuleScript" referent="96">
                 <Properties>
                   <string name="Name">ConditionFunction</string>
                   <string name="Source"><![CDATA[return function (registry)
@@ -2756,7 +2760,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="96">
+              <Item class="ModuleScript" referent="97">
                 <Properties>
                   <string name="Name">Duration</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -2874,7 +2878,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="97">
+              <Item class="ModuleScript" referent="98">
                 <Properties>
                   <string name="Name">MathOperator</string>
                   <string name="Source"><![CDATA[return function(registry)
@@ -2920,7 +2924,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="98">
+              <Item class="ModuleScript" referent="99">
                 <Properties>
                   <string name="Name">Player</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -2959,7 +2963,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="99">
+              <Item class="ModuleScript" referent="100">
                 <Properties>
                   <string name="Name">PlayerId</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -3020,7 +3024,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="100">
+              <Item class="ModuleScript" referent="101">
                 <Properties>
                   <string name="Name">Primitives</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -3101,7 +3105,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="101">
+              <Item class="ModuleScript" referent="102">
                 <Properties>
                   <string name="Name">StoredKey</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -3141,7 +3145,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="102">
+              <Item class="ModuleScript" referent="103">
                 <Properties>
                   <string name="Name">Team</string>
                   <string name="Source">local Teams = game:GetService("Teams")
@@ -3199,7 +3203,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="103">
+              <Item class="ModuleScript" referent="104">
                 <Properties>
                   <string name="Name">Type</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -3230,7 +3234,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="104">
+              <Item class="ModuleScript" referent="105">
                 <Properties>
                   <string name="Name">URL</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Parent.Shared.Util)
@@ -3256,7 +3260,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="105">
+              <Item class="ModuleScript" referent="106">
                 <Properties>
                   <string name="Name">UserInput</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -3293,7 +3297,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="106">
+              <Item class="ModuleScript" referent="107">
                 <Properties>
                   <string name="Name">Vector</string>
                   <string name="Source">local Util = require(script.Parent.Parent.Shared.Util)
@@ -3330,7 +3334,7 @@ end</string>
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="107">
+            <Item class="ModuleScript" referent="108">
               <Properties>
                 <string name="Name">CmdrClient</string>
                 <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -3461,7 +3465,7 @@ require(script.DefaultEventHandlers)(Cmdr)
 return Cmdr
 ]]></string>
               </Properties>
-              <Item class="ModuleScript" referent="108">
+              <Item class="ModuleScript" referent="109">
                 <Properties>
                   <string name="Name">CmdrInterface</string>
                   <string name="Source"><![CDATA[-- Here be dragons
@@ -3617,7 +3621,7 @@ return function (Cmdr)
 end
 ]]></string>
                 </Properties>
-                <Item class="ModuleScript" referent="109">
+                <Item class="ModuleScript" referent="110">
                   <Properties>
                     <string name="Name">AutoComplete</string>
                     <string name="Source"><![CDATA[-- luacheck: ignore 212
@@ -3804,7 +3808,7 @@ end
 ]]></string>
                   </Properties>
                 </Item>
-                <Item class="ModuleScript" referent="110">
+                <Item class="ModuleScript" referent="111">
                   <Properties>
                     <string name="Name">Window</string>
                     <string name="Source"><![CDATA[-- Here be dragons
@@ -4164,7 +4168,7 @@ return Window
                   </Properties>
                 </Item>
               </Item>
-              <Item class="ModuleScript" referent="111">
+              <Item class="ModuleScript" referent="112">
                 <Properties>
                   <string name="Name">DefaultEventHandlers</string>
                   <string name="Source">local StarterGui = game:GetService("StarterGui")
@@ -4185,7 +4189,7 @@ end</string>
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="112">
+            <Item class="ModuleScript" referent="113">
               <Properties>
                 <string name="Name">CreateGui</string>
                 <string name="Source">return function ()
@@ -4400,7 +4404,7 @@ end</string>
 end</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="113">
+            <Item class="ModuleScript" referent="114">
               <Properties>
                 <string name="Name">Initialize</string>
                 <string name="Source"><![CDATA[local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -4453,11 +4457,11 @@ end
 ]]></string>
               </Properties>
             </Item>
-            <Item class="Folder" referent="114">
+            <Item class="Folder" referent="115">
               <Properties>
                 <string name="Name">Shared</string>
               </Properties>
-              <Item class="ModuleScript" referent="115">
+              <Item class="ModuleScript" referent="116">
                 <Properties>
                   <string name="Name">Argument</string>
                   <string name="Source"><![CDATA[local Util = require(script.Parent.Util)
@@ -4717,7 +4721,7 @@ return Argument
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="116">
+              <Item class="ModuleScript" referent="117">
                 <Properties>
                   <string name="Name">Command</string>
                   <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -4945,7 +4949,7 @@ return Command
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="117">
+              <Item class="ModuleScript" referent="118">
                 <Properties>
                   <string name="Name">Dispatcher</string>
                   <string name="Source">local RunService = game:GetService("RunService")
@@ -5140,7 +5144,7 @@ return function (cmdr)
 end</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="118">
+              <Item class="ModuleScript" referent="119">
                 <Properties>
                   <string name="Name">Registry</string>
                   <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -5433,7 +5437,7 @@ end
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="119">
+              <Item class="ModuleScript" referent="120">
                 <Properties>
                   <string name="Name">Util</string>
                   <string name="Source"><![CDATA[local TextService = game:GetService("TextService")
@@ -5988,11 +5992,11 @@ return Util
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="120">
+        <Item class="Folder" referent="121">
           <Properties>
             <string name="Name">evaera_promise@4.0.0</string>
           </Properties>
-          <Item class="ModuleScript" referent="121">
+          <Item class="ModuleScript" referent="122">
             <Properties>
               <string name="Name">promise</string>
               <string name="Source"><![CDATA[--[[
@@ -8067,11 +8071,1896 @@ return Promise
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="122">
+        <Item class="Folder" referent="123">
+          <Properties>
+            <string name="Name">ffrostflame_bridgenet2@0.1.0</string>
+          </Properties>
+          <Item class="ModuleScript" referent="124">
+            <Properties>
+              <string name="Name">TableKit</string>
+              <string name="Source"><![CDATA[return require(script.Parent.Parent["ffrostflame_tablekit@0.1.1"]["tablekit"])
+]]></string>
+            </Properties>
+          </Item>
+          <Item class="ModuleScript" referent="125">
+            <Properties>
+              <string name="Name">bridgenet2</string>
+              <string name="Source"><![CDATA[--!strict
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Identifiers = require(script.Identifiers)
+local Server = require(script.ServerProcess)
+local Client = require(script.ClientProcess)
+local NetworkUtils = require(script.NetworkUtils)
+local Output = require(script.Output)
+local ObjectFormat = require(script.ObjectFormat)
+local ServerBridge = require(script.ServerBridge)
+local ClientBridge = require(script.ClientBridge)
+
+local isServer = RunService:IsServer()
+
+--[[
+	@class BridgeNet2
+
+	The BridgeNet2 root namespace which contains all of the functions included in the library. Luau and typescript APIs
+	are completely separate- you cannot use the typescript API in Luau, and vice versa.
+]]
+
+task.spawn(function()
+	Output.silent("Starting BridgeNet2 identifier process")
+	Identifiers._startProcess()
+	Output.silent("Starting BridgeNet2 object format process")
+	ObjectFormat._startProcess()
+	if isServer then
+		Output.log("Starting BridgeNet2 server process")
+		Server._startProcess()
+	else
+		Output.log("Starting BridgeNet2 client process")
+		Client._startProcess()
+	end
+end)
+
+export type ESeverityLevel = "log" | "warn" | "error" | "fatal"
+export type TOutputObject = {
+	Severity: ESeverityLevel,
+	Text: string,
+}
+
+if isServer then
+	Output.warnAssert(
+		script:IsDescendantOf(ReplicatedStorage),
+		"It is strongly recommended to put the BridgeNet module in ReplicatedStorage, where both the client and server can access it."
+	)
+
+	-- Duplicate module check
+
+	-- Check for marker
+	for _, object in ReplicatedStorage:GetChildren() do
+		if object.Name == "BridgeNet2" and object:IsA("ObjectValue") then
+			Output.warn(
+				"Duplicate dependency found. Centralize your packages so that dependency duping doesn't occur, or use Wally, a package manager for roblox."
+			)
+			return require(object.Value :: ModuleScript)
+		end
+	end
+
+	-- Add marker
+	local value = Instance.new("ObjectValue")
+	value.Value = script
+	value.Name = "BridgeNet2"
+	value.Parent = ReplicatedStorage
+end
+
+export type TClientBridge<T> = ClientBridge.ClientBridge<T>
+export type TServerBridge<T> = ServerBridge.ServerBridge<T>
+
+export type ESecurityMeasures = "incorrectFormat" | "incorrectType" | "packetOverflow"
+-- We have to have this type because Luau has no string literal inference and the type will resolve to "string"
+type TSecurityMeasuresEnum = {
+	IncorrectFormat: "incorrectFormat",
+	IncorrectType: "incorrectType",
+	PacketOverflow: "packetOverflow",
+}
+
+local SecurityMeasures: TSecurityMeasuresEnum = {
+	IncorrectFormat = "incorrectFormat",
+	IncorrectType = "incorrectType",
+	PacketOverflow = "packetOverflow",
+}
+
+local ReturnValue = {
+	-- NetworkUtils
+
+	--[[
+		@function NumberToBestForm
+		@within BridgeNet2
+
+		Takes a number, and converts it into its most network efficient form. This works because a number is 9 bytes- but strings are (stringLen)+2,
+		so a 1-character string to store a 1-digit number is more efficient than sending it as an actual number. This is way better- and it shows up
+		at any real, practical scale. If you send this number over, you should **always** be calling tonumber on it! That is NOT optional.
+
+		```lua
+		-- "Example hexadecimal string" in ASCII
+		local smallNumber = 4
+		local bigNumber = 1000000000
+
+		local smallNumberBestForm = BridgeNet2.NumberToBestForm(smallNumber)
+		print(typeof(smallNumberBestForm)) -- prints "string"
+		
+		local bigNumberBestForm = BridgeNet2.NumberToBestForm(bigNumber)
+		print(typeof(bigNumberBestForm)) -- prints "number"
+		```
+
+		@param number number
+		@return string | number
+	]]
+	NumberToBestForm = NetworkUtils.NumberToBestForm,
+
+	--[[
+		@function ToHex
+		@within BridgeNet2
+
+		Converts a string consisting of ASCII characters into hexadecimal. This is useful for representing
+		binary strings and other human unreadable data (for example, connection IDs) into strings, which
+		is easier to understand than say, a binary string which when directly converted into ASCII may have things
+		like line breaks, and other weird character codes. The function uses string.format and string.byte()
+		to convert the characters byte numerical code into hexadecimal.
+
+		```lua
+		-- "Example hexadecimal string" in ASCII
+		local asciiString = "Example hexadecimal string"
+		local hexString = BridgeNet2.ToHex(asciiString)
+
+		print(hexString) -- Prints the hexadecimal form of 'Example hexadecimal string'
+		```
+
+		@param regularAscii string
+		@return string
+	]]
+	ToHex = NetworkUtils.ToHex,
+
+	--[[
+		@function ToReadableHex
+		@within BridgeNet2
+
+		Converts a string consisting of ASCII characters into a more readable (bytes are separated) string of hex. This is mostly used for
+		debugging binary strings- it looks nicer than ToHex. There are practical applications where ToHex is used internally and never revealed
+		for debugging- but when hexadecimal is needed for debugging (as output strings can get cluttered very very quickly), this function
+		should be used instead.
+
+		```lua
+		-- "Example hexadecimal string" in ASCII
+		local asciiString = "Example hexadecimal string"
+		local hexString = BridgeNet2.ToReadableHex(asciiString)
+
+		print(hexString) -- Prints the hexadecimal form of 'Example hexadecimal string', but with spaces.
+		```
+
+		@param regularAscii string
+		@return string
+	]]
+	ToReadableHex = NetworkUtils.ToReadableHex,
+
+	--[[
+		@function FromHex
+		@within BridgeNet2
+
+		Converts a hexadecimal string into a string of ASCII characters. This can be used for various purposes,
+		for example, converting a globally uniue identifier (GUID) into a binary string, which saves data. Or you
+		could convert a thread ID, or a memory address into a string for debugging purposes. Hexadecimal can be used
+		for a variety of purposes. The function uses string.char alongside tonumber(string, 16) to convert the
+		hexadecimal into a character code, which is converted into ASCII.
+
+		```lua
+		-- "Example hexadecimal string" in hex
+		local hexString = "4578616D706C652068657861646563696D616C20737472696E67"
+		local asciiString = BridgeNet2.FromHex(hexString)
+
+		print(asciiString) -- Prints 'Example hexadecimal string'
+		```
+
+		@param hexadecimal string
+		@return string
+	]]
+	FromHex = NetworkUtils.FromHex,
+
+	--[[
+		@function CreateUUID
+		@within BridgeNet2
+
+		Converts a hexadecimal string into a string of ASCII characters. This can be used for various purposes,
+		for example, converting a globally uniue identifier (GUID) into a binary string, which saves data. Or you
+		could convert a thread ID, or a memory address into a string for debugging purposes. Hexadecimal can be used
+		for a variety of purposes. The function uses string.char alongside tonumber(string, 16) to convert the
+		hexadecimal into a character code, which is converted into ASCII.
+
+		```lua
+		-- "Example hexadecimal string" in hex
+		local hexString = "4578616D706C652068657861646563696D616C20737472696E67"
+		local asciiString = BridgeNet2.FromHex(hexString)
+
+		print(asciiString) -- Prints 'Example hexadecimal string'
+		```
+
+		@return string
+	]]
+	CreateUUID = NetworkUtils.CreateUUID,
+
+	-- Identifiers
+	--[[
+		@function ReferenceIdentifier
+		@within BridgeNet2
+	
+		Assuming you have previous knowledge on the identifier system- which, if you do not, there is a small article written in the
+		documentation site for BridgeNet2, `.ReferenceIdentifier` is how you initialize an identifier on the server.
+		
+		On the client, it simply reads from the already-existing dictionary to figure out what it should return. The only difference between
+		`.FromIdentifier` and `.ReferenceIdentifier` on the client, is that ReferenceIdentifier will yield for up to 1 second until it
+		breaks and returns the default name.
+		
+		```lua title="spellHandler.client.lua"
+		local SpellCaster = BridgeNet2.ReferenceBridge("SpellCaster")
+
+		local Fireball = BridgeNet2.ReferenceIdentifier("Fireball")
+
+		SomeUserInputSignalHere:Connect(function(...)
+			SpellCaster:Fire(Fireball) -- Fires a 1 or 2 character string, much smaller than an 8-character string.
+		end)
+		```
+		
+		@param identifierName string
+		@return string
+	]]
+	ReferenceIdentifier = Identifiers.ReferenceIdentifier,
+
+	--[[
+		@function FromCompressed
+		@within BridgeNet2
+		
+		
+		
+		@param compressedIdentifier
+		@return string
+	]]
+	FromCompressed = Identifiers.FromCompressed,
+
+	--[[
+		@function FromIdentifier
+		@within BridgeNet2
+		
+		
+		
+		@param identifierName
+		@return string
+	]]
+	FromIdentifier = Identifiers.FromIdentifier,
+
+	-- Players
+
+	--[[
+		@function AllPlayers
+		@within BridgeNet2
+		
+		
+		@return PlayerSet
+	]]
+	AllPlayers = Server.AllPlayers,
+
+	--[[
+		@function PlayersExcept
+		@within BridgeNet2
+		
+		
+		@return PlayerSet
+	]]
+	PlayersExcept = Server.PlayersExcept,
+
+	--[[
+		@function Players
+		@within BridgeNet2
+		
+		
+		@return PlayerSet
+	]]
+	Players = Server.Players,
+
+	--[[
+		@function ReadOutput
+		@within BridgeNet2
+		
+		
+		@return OutputLog
+	]]
+	ReadOutput = Output.Hook,
+
+	--[[
+		@function ReferenceBridge
+		@within BridgeNet2
+		
+		
+		@return ServerBridge | ClientBridge
+	]]
+
+	ReferenceBridge = (
+			((if isServer then ServerBridge._new else ClientBridge._new) :: any) :: () -> any
+		) :: (name: string) -> (TClientBridge<any> | TServerBridge<any>),
+
+	--[[
+		@function SetSecurity
+		@within BridgeNet2
+		
+		
+		@return void
+	]]
+	SetSecurity = function(
+		securityMeasure: ESecurityMeasures,
+		handler: (player: Player) -> () | (player: Player, num: number?) -> ()
+	)
+		Output.fatalAssert(isServer, "Cannot call SetSecurity from client")
+
+		if securityMeasure == "incorrectType" then
+			Server._incorrectTypeHandler(handler)
+		elseif securityMeasure == "incorrectFormat" then
+			Server._incorrectFormatHandler(handler)
+		elseif securityMeasure == "packetOverflow" then
+			Server._packetOverflowHandler(handler)
+		end
+	end,
+	SecurityMeasuresEnum = SecurityMeasures,
+}
+
+return ReturnValue
+]]></string>
+            </Properties>
+            <Item class="ModuleScript" referent="126">
+              <Properties>
+                <string name="Name">ClientBridge</string>
+                <string name="Source"><![CDATA[--!strict
+local ClientProcess = require(script.Parent.ClientProcess)
+local Identifiers = require(script.Parent.Identifiers)
+local Output = require(script.Parent.Output)
+
+--[[
+	@class ClientBridge
+]]
+local ClientBridge = {}
+ClientBridge.__index = ClientBridge
+
+-- Can't have functional class-specific typings within the actual class sadly
+function ClientBridge._new(name: string)
+	local self = setmetatable({}, ClientBridge)
+
+	-- Default max wait time is fine
+	self._identifier = Identifiers.ReferenceIdentifier(name)
+
+	ClientProcess._idIntoBridge(self._identifier)
+
+	self._name = name
+
+	-- Middleware
+	self._inboundMiddleware = {}
+	self._outboundMiddleware = {}
+
+	return self
+end
+
+function ClientBridge:InboundMiddleware(middlewareTable: { (object: any) -> any })
+	self._inboundMiddleware = middlewareTable
+end
+
+function ClientBridge:OutboundMiddleware(middlewareTable: { (object: any) -> any })
+	self._outboundMiddleware = middlewareTable
+end
+
+function ClientBridge:Fire(object)
+	Output.fatalAssert(
+		typeof(object) == "table",
+		string.format("ClientBridge:Fire takes a table, got %*", typeof(object))
+	)
+
+	if self._outboundMiddleware ~= nil then
+		local result = object
+
+		-- Loop through the middleware functions- raise a silent log if any of them return nil for debugging.
+		for _, middlewareFunction: (object: any) -> any in self._outboundMiddleware do
+			result = middlewareFunction(result)
+				or (
+					Output.silent(
+						string.format(
+							"Outbound middleware on bridge %* returned nil, defaulting to object.",
+							self._name
+						)
+					) or object
+				)
+		end
+
+		ClientProcess._addToQueue(self._identifier, result)
+	else
+		ClientProcess._addToQueue(self._identifier, object)
+	end
+end
+
+function ClientBridge:Connect(callback: (object: any) -> ())
+	ClientProcess._connect(self._identifier, function(object)
+		if self._inboundMiddleware ~= nil then
+			local result = object
+
+			-- Loop through the middleware functions- raise a silent log if any of them return nil for debugging.
+			for _, middlewareFunction: (player: Player, object: any) -> any in self._inboundMiddleware do
+				result = middlewareFunction(result)
+					or (
+						Output.silent(
+							string.format(
+								"Inbound middleware on bridge %* returned nil, defaulting to object.",
+								self._name
+							)
+						) or object
+					)
+			end
+
+			callback(result)
+		else
+			callback(object)
+		end
+	end)
+end
+
+function ClientBridge:Destroy()
+	for key, _ in self do
+		-- No complex instances here either, just set everything to nil.
+		self[key] = nil
+	end
+	setmetatable(self, nil)
+end
+
+export type ClientBridge<T> = {
+	Fire: (self: ClientBridge<T>, object: T) -> (),
+	Connect: (self: ClientBridge<T>, callback: (object: T) -> ()) -> (),
+	InboundMiddleware: (
+		self: ClientBridge<T>,
+		{ ((object: T) -> T) | ((object: T) -> ()) | ((object: T) -> nil) }
+	) -> (),
+	OutboundMiddleware: (
+		self: ClientBridge<T>,
+		{ ((object: T) -> T) | ((object: T) -> ()) | ((object: T) -> nil) }
+	) -> (),
+	Destroy: () -> (),
+}
+
+return ClientBridge
+]]></string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="127">
+              <Properties>
+                <string name="Name">ClientProcess</string>
+                <string name="Source"><![CDATA[--!strict
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Output = require(script.Parent.Output)
+
+type TData = { [any]: any }
+
+local outboundQueue: { string | {} } = {}
+local inboundQueue: { { [string]: { { [any]: any } } } } = {}
+
+local callbackMap: { [string]: { (object: any) -> () } } = {}
+
+local freeThread: thread? -- Thread reusage
+local func = nil
+
+local function passer(payload)
+	local acquiredThread = freeThread
+	freeThread = nil
+	func(payload)
+	freeThread = acquiredThread
+end
+
+local function yielder()
+	while true do
+		passer(coroutine.yield())
+	end
+end
+
+local function RecycledSpawn(payload)
+	if freeThread == nil then
+		freeThread = coroutine.create(yielder)
+		coroutine.resume(freeThread)
+	end
+	task.spawn(freeThread :: thread, payload)
+end
+
+local Client = {}
+
+function Client._startProcess()
+	debug.setmemorycategory("BridgeNet2")
+	Output.log("Loading BridgeNet2")
+
+	local DataRemoteEvent: RemoteEvent = ReplicatedStorage:WaitForChild("DataRemoteEvent")
+	local MetaRemoteEvent: RemoteEvent = ReplicatedStorage:WaitForChild("MetaRemoteEvent")
+
+	DataRemoteEvent.OnClientEvent:Connect(function(receivedData: { [string]: { TData } })
+		table.insert(inboundQueue, receivedData)
+	end)
+
+	RunService.PostSimulation:Connect(function()
+		debug.profilebegin("BridgeNet2")
+
+		debug.profilebegin("BridgeNet2.Send")
+
+		if #outboundQueue > 0 then
+			DataRemoteEvent:FireServer(outboundQueue)
+			table.clear(outboundQueue)
+		end
+
+		debug.profileend()
+
+		debug.profilebegin("BridgeNet2.Receive")
+		if #inboundQueue > 0 then
+			for _, obj in inboundQueue do
+				debug.profilebegin("packet")
+				for identifier, data in obj do
+					debug.profilebegin("fired: " .. #data)
+					local calls = callbackMap[identifier]
+
+					if not calls then
+						continue
+					end
+
+					if #calls == 1 then
+						local callback = calls[1]
+						for _, object in data do
+							func = callback
+							RecycledSpawn(object)
+						end
+					else
+						for _, object in data do
+							for _, callback in calls do
+								func = callback
+								RecycledSpawn(object)
+							end
+						end
+					end
+					debug.profileend()
+				end
+				debug.profileend()
+			end
+			table.clear(inboundQueue)
+		end
+		debug.profileend()
+
+		debug.profileend()
+	end)
+
+	task.spawn(function()
+		-- Wait 5 frames to let other scripts execute.
+		-- This is to let connections to bridges appear- there would be no point in the queueing functionality if BridgeNet2 loaded
+		-- before your connections could actually connect.
+		for _ = 1, 5 do
+			task.wait()
+		end
+		MetaRemoteEvent:FireServer("loaded")
+	end)
+
+	Output.log("Loaded")
+end
+
+function Client._idIntoBridge(identifier: string)
+	callbackMap[identifier] = {}
+end
+
+function Client._addToQueue(identifier: string, object: {})
+	table.insert(outboundQueue, identifier)
+	table.insert(outboundQueue, object)
+end
+
+function Client._connect(identifier: string, callback: (object: any) -> ())
+	table.insert(callbackMap[identifier], callback)
+end
+
+return Client
+]]></string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="128">
+              <Properties>
+                <string name="Name">Identifiers</string>
+                <string name="Source"><![CDATA[--!strict
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Output = require(script.Parent.Output)
+
+type recursiveTree = {
+	[string]: recursiveTree | string,
+}
+
+local testingMode = false
+local identifierCount = 0
+local compressedIdentifierMap: { [string]: string } = {}
+local fullIdentifierMap: { [string]: string } = {}
+local IdentifierStorage
+
+local Identifiers = {}
+
+function Identifiers._startProcess()
+	if RunService:IsServer() then
+		IdentifierStorage = Instance.new("Folder")
+		IdentifierStorage.Name = "IdentifierStorage"
+		IdentifierStorage.Parent = ReplicatedStorage
+	else
+		IdentifierStorage = ReplicatedStorage:WaitForChild("IdentifierStorage")
+		for id, value in IdentifierStorage:GetAttributes() do
+			fullIdentifierMap[id] = value
+			compressedIdentifierMap[value] = id
+		end
+		IdentifierStorage.AttributeChanged:Connect(function(id: string)
+			local packed: string = IdentifierStorage:GetAttribute(id)
+			if packed then
+				fullIdentifierMap[id] = packed
+				compressedIdentifierMap[packed] = id
+			else
+				local oldValue = fullIdentifierMap[id]
+				fullIdentifierMap[id] = nil
+				compressedIdentifierMap[oldValue] = nil
+			end
+		end)
+	end
+end
+
+function Identifiers._testingMode() -- For testing w/ Hoarcekat and other similar things where yielding isn't an option
+	testingMode = true
+end
+
+function Identifiers.ReferenceIdentifier(name: string, maxWaitTime: number?): string
+	Output.fatalAssert(
+		typeof(name) == "string",
+		string.format("ReferenceIdentifier takes string, got %*", typeof(name))
+	)
+
+	if maxWaitTime ~= nil then
+		Output.fatalAssert(
+			typeof(maxWaitTime) == "number",
+			string.format("ReferenceIdentifier second arg maxWaitTime takes number, got %*", typeof(name))
+		)
+	end
+	local maxWaitTimeArg = maxWaitTime or 1
+
+	if testingMode then
+		fullIdentifierMap[name] = name
+		compressedIdentifierMap[name] = name
+		return name
+	end
+
+	if RunService:IsServer() then
+		-- 2^16 is the number of combinations in 2 bytes
+		Output.warnAssert(identifierCount < (2 ^ 16), "cannot create any more identifiers, over 2^16 cap.")
+		Output.silent(string.format("creating identifier: %*, identifier count: %*", name, identifierCount))
+
+		identifierCount += 1
+		local packed: string = string.pack("B", identifierCount)
+		IdentifierStorage:SetAttribute(name, packed)
+
+		fullIdentifierMap[name] = packed
+		compressedIdentifierMap[packed] = name
+
+		return packed
+	else
+		local waitingTime = 0
+
+		while true do
+			local identifier = fullIdentifierMap[name]
+			if identifier then
+				return identifier
+			end
+			waitingTime += task.wait()
+			if waitingTime >= maxWaitTimeArg then
+				Output.warn(string.format("reached max wait time for identifier %*, broke yield.", name))
+				return ""
+			end
+		end
+	end
+end
+
+function Identifiers.Tree(tree: recursiveTree, waitTime: number?)
+	Output.fatalAssert(typeof(tree) == "table", string.format("tree takes a table, not a %*", typeof(tree)))
+
+	local identifierTree = {}
+
+	for name, value in tree do
+		Output.errorAssert(typeof(name) == "string", "you should not pass a non-string value in your tree table")
+		if typeof(value) == "table" then
+			Identifiers.Tree(value, waitTime or 0.8)
+		else
+			identifierTree[name] = Identifiers.ReferenceIdentifier(value, waitTime or 0.8)
+		end
+	end
+
+	return identifierTree
+end
+
+function Identifiers.FromCompressed(compressed: string): string?
+	Output.fatalAssert(
+		typeof(compressed) == "string",
+		string.format("FromCompressed takes string, got %*", typeof(compressed))
+	)
+	return compressedIdentifierMap[compressed]
+end
+
+function Identifiers.FromIdentifier(identifier: string): string?
+	Output.fatalAssert(
+		typeof(identifier) == "string",
+		string.format("FromIdentifier takes string, got %*", typeof(identifier))
+	)
+	return fullIdentifierMap[identifier]
+end
+
+return Identifiers
+]]></string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="129">
+              <Properties>
+                <string name="Name">NetworkUtils</string>
+                <string name="Source"><![CDATA[--!strict
+local HttpService = game:GetService("HttpService")
+
+local Output = require(script.Parent.Output)
+
+local NetworkUtils = {}
+
+function NetworkUtils.CreateUUID(): string
+	return string.gsub(HttpService:GenerateGUID(false), "-", "") :: string
+end
+
+function NetworkUtils.FromHex(toConvert: string): string
+	Output.fatalAssert(typeof(toConvert) == "string", string.format("FromHex takes string, got %*", typeof(toConvert)))
+	local len = #toConvert
+	local result = table.create(len / 2)
+	for i = 1, len, 2 do
+		result[(i + 1) / 2] = tonumber(string.sub(toConvert, i, i + 1), 16)
+	end
+	return string.char(unpack(result) :: number)
+end
+
+function NetworkUtils.ToHex(toConvert: string): string
+	Output.fatalAssert(typeof(toConvert) == "string", string.format("ToHex takes string, got %*", typeof(toConvert)))
+	return string.format(string.rep("%02X", #toConvert), string.byte(toConvert, 1, -1))
+end
+
+function NetworkUtils.ToReadableHex(toConvert: string): string
+	Output.fatalAssert(
+		typeof(toConvert) == "string",
+		string.format("ToReadableHex takes string, got %*", typeof(toConvert))
+	)
+	return string.format(string.rep("%02X ", #toConvert), string.byte(toConvert, 1, -1))
+end
+
+function NetworkUtils.NumberToBestForm(num: number): number | string
+	local asString = tostring(num)
+	if #asString <= 7 then
+		return asString
+	else
+		return num
+	end
+end
+
+return NetworkUtils
+]]></string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="130">
+              <Properties>
+                <string name="Name">ObjectFormat</string>
+                <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
+
+local ObjectFormat = {}
+
+function ObjectFormat._startProcess() end
+
+function ObjectFormat.CreateType(template: { [any]: any }) end
+
+function ObjectFormat.FromArray() end
+
+function ObjectFormat.ToArray() end
+
+return ObjectFormat
+]]></string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="131">
+              <Properties>
+                <string name="Name">Output</string>
+                <string name="Source"><![CDATA[--!strict
+local RunService = game:GetService("RunService")
+
+type ESeverityLevel = "log" | "warn" | "error" | "fatal"
+type TOutputObject = {
+	Severity: ESeverityLevel,
+	Text: string,
+}
+type TSeverityLevelEnum = {
+	Log: "log",
+	Warn: "warn",
+	Error: "error",
+	Fatal: "fatal",
+}
+
+local PATTERN = if RunService:IsServer() then "[BridgeNet2] %*" else "[BridgeNet2] %*"
+local ERROR_PATTERN = if RunService:IsServer() then "[BridgeNet2:S] %*" else "[BridgeNet2:C] %*"
+local SEVERITY_LEVELS: TSeverityLevelEnum = {
+	Log = "log",
+	Warn = "warn",
+	Error = "error",
+	Fatal = "fatal",
+}
+local logs: { TOutputObject } = {}
+
+local function logSeverity(severity: ESeverityLevel, info: string)
+	local OutputObject: TOutputObject = {
+		Severity = severity,
+		Text = string.format(PATTERN, info),
+	}
+	table.insert(logs, OutputObject)
+end
+
+local Output = {}
+
+function Output.Hook()
+	return logs
+end
+
+function Output.silent(info: string)
+	logSeverity(SEVERITY_LEVELS.Log, info)
+end
+
+function Output.log(info: string)
+	logSeverity(SEVERITY_LEVELS.Log, info)
+	print(string.format(PATTERN, info))
+end
+
+function Output.logAssert(condition: boolean, info: string)
+	if not condition then
+		logSeverity(SEVERITY_LEVELS.Log, info)
+		Output.log(info)
+	end
+end
+
+function Output.warn(info: string)
+	logSeverity(SEVERITY_LEVELS.Warn, info)
+	warn(string.format(PATTERN, info))
+end
+
+function Output.warnAssert(condition: boolean, info: string)
+	if not condition then
+		logSeverity(SEVERITY_LEVELS.Warn, info)
+		Output.warn(info)
+	end
+end
+
+function Output.error(info: string)
+	logSeverity(SEVERITY_LEVELS.Error, info)
+	task.spawn(error, string.format(ERROR_PATTERN, info))
+end
+
+function Output.errorAssert(condition: boolean, info: string)
+	if not condition then
+		logSeverity(SEVERITY_LEVELS.Error, info)
+		task.spawn(Output.error, info)
+	end
+end
+
+function Output.fatal(info: string)
+	logSeverity(SEVERITY_LEVELS.Fatal, info)
+	error(string.format(ERROR_PATTERN, info))
+end
+
+function Output.fatalAssert(condition: boolean, info: string)
+	if not condition then
+		logSeverity(SEVERITY_LEVELS.Fatal, info)
+		Output.fatal(info)
+	end
+end
+
+return Output
+]]></string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="132">
+              <Properties>
+                <string name="Name">ServerBridge</string>
+                <string name="Source"><![CDATA[--!strict
+local ServerProcess = require(script.Parent.ServerProcess)
+local Identifiers = require(script.Parent.Identifiers)
+local Output = require(script.Parent.Output)
+
+type TOptionalCallback<T> = (() -> T) | (() -> nil) | (() -> ())
+
+--[[
+	@class ServerBridge
+]]
+local ServerBridge = {}
+ServerBridge.__index = ServerBridge
+
+function ServerBridge._new(name: string)
+	local self = setmetatable({}, ServerBridge)
+
+	-- Since this is the server, ReferenceIdentifier will not yield
+	self._identifier = Identifiers.ReferenceIdentifier(name)
+
+	-- Middleware
+	self._outboundMiddleware = nil
+	self._inboundMiddleware = nil
+
+	self._name = name
+
+	-- Rate limiting
+	self._rateLimiting = false
+	self._maxRate = 500
+	self._rateMap = {}
+	self._overflowFunction = function()
+		return false
+	end
+
+	ServerProcess._idIntoBridge(self._identifier)
+
+	return self
+end
+
+function ServerBridge:InboundMiddleware(middlewareTable: { (player: Player, object: any) -> any })
+	self._inboundMiddleware = middlewareTable
+end
+
+function ServerBridge:OutboundMiddleware(middlewareTable: { (target: ServerProcess.TPlayerType, object: any) -> any })
+	self._outboundMiddleware = middlewareTable
+end
+
+function ServerBridge:Connect<T>(callback: (player: Player, object: T) -> nil)
+	ServerProcess._connect(self._identifier, function(player, object)
+		if self._rateLimiting then
+			if self._rateMap[player] ~= nil then
+				self._rateMap[player] += 1
+			else
+				self._rateMap[player] = 1
+			end
+
+			if self._rateMap[player] > self._maxRate then
+				if not self._overflowFunction(player) then
+					return
+				end
+			end
+		end
+
+		if self._inboundMiddlewares ~= nil then
+			local result = object
+
+			-- Loop through the middleware functions- raise a silent log if any of them return nil for debugging.
+			for _, middlewareFunction: (player: Player, object: any) -> any in self._inboundMiddlewares do
+				result = middlewareFunction(player, result)
+					or (
+						Output.silent(
+							string.format(
+								"Inbound middleware on bridge %* returned nil, defaulting to object.",
+								self._name
+							)
+						) or object
+					)
+			end
+
+			callback(player, result)
+		else
+			callback(player, object)
+		end
+	end)
+end
+
+function ServerBridge:RateLimit(invokesPerSecond: number, overflowFunction: (player: Player) -> nil)
+	self._rateLimiting = true
+	self._overflowFunction = overflowFunction
+	self._maxRate = invokesPerSecond
+end
+
+function ServerBridge:DisableRateLimit()
+	self._rateLimiting = false
+end
+
+function ServerBridge:Fire<T>(target: ServerProcess.TPlayerType, object: T & {})
+	if self._outboundMiddleware ~= nil then
+		local result = object
+
+		-- Loop through the middleware functions- raise a silent log if any of them return nil for debugging.
+		for _, middlewareFunction: (player: ServerProcess.TPlayerType, object: any) -> any in self._outboundMiddlewares do
+			result = middlewareFunction(target, result)
+				or (
+					Output.silent(
+						string.format(
+							"Outbound middleware on bridge %* returned nil, defaulting to object.",
+							self._name
+						)
+					) or object
+				)
+		end
+
+		ServerProcess._addToQueue(target, self._identifier, result)
+	else
+		ServerProcess._addToQueue(target, self._identifier, object)
+	end
+end
+
+function ServerBridge:Destroy()
+	table.clear(self)
+	setmetatable(self, nil)
+end
+
+-- () -> () means it returns void. Pretty neat trick I learned from Aloroider
+export type ServerBridge<T> =
+	{
+		Connect: (
+			self: ServerBridge<T>,
+			((player: Player, object: T) -> ()) | ((player: Player, object: T) -> nil)
+		) -> (),
+		Fire: (self: ServerBridge<T>, target: ServerProcess.TPlayerType, object: T) -> (),
+		InboundMiddleware: (
+			self: ServerBridge<T>,
+			{ ((player: Player, object: T) -> T) | ((player: Player, object: T) -> ()) | ((player: Player, object: T) -> nil) }
+		) -> (),
+		OutboundMiddleware: (
+			self: ServerBridge<T>,
+			{ ((target: ServerProcess.TPlayerType, object: T) -> T) | ((player: Player, object: T) -> ()) | ((player: Player, object: T) -> nil) }
+		) -> (),
+		RateLimit: (self: ServerBridge<T>, invokesPerSecond: number, overflowFunction: (player: Player) -> nil) -> (),
+		Destroy: (self: ServerBridge<T>) -> (),
+	}
+
+return ServerBridge
+]]></string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="133">
+              <Properties>
+                <string name="Name">ServerProcess</string>
+                <string name="Source"><![CDATA[--!strict
+
+---@diagnostic disable: unused-local, unused-vararg
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Output = require(script.Parent.Output)
+local TableKit = require(script.Parent.Parent.TableKit)
+
+export type TPlayerType = {
+	type: "set",
+	plrVal: (Player | { Player }),
+} | {
+	type: "all",
+} | {
+	type: "except",
+	plrVal: (Player | { Player }),
+}
+type TMetaMessage = "loaded"
+type TOutboundPacket = {
+	plrs: TPlayerType,
+	id: string,
+	payload: { any },
+}
+type TInboundPacket = { string | {} }
+
+local INVALID_PACKET_MESSAGE =
+	"Player %*:%* sent an invalid packet. Likely exploiter- or something interacted with the internal BridgeNet API."
+local PACKET_LIMIT_OVERFLOW =
+	"Player %*:%* has reached the packet limit of 12. Likely exploiter- or you're firing more than 12 times in the same frame."
+
+local isServer = RunService:IsServer()
+
+local playerList: { [Player]: boolean? } = {}
+local loadingPlayers: { [Player]: number? } = {}
+local loadingPlayersQueue: { [Player]: {}? } = {}
+
+local outboundQueue: { [number]: TOutboundPacket } = {}
+local inboundQueue: { [Player]: TInboundPacket? } = {}
+
+local callbackMap: { [string]: { (...any) -> () } } = {}
+
+-- Placeholder functions
+local incorrectFormatHandler: (plr: Player) -> () = function(...)
+	return ...
+end
+local incorrectTypeHandler: (plr: Player) -> () = function(...)
+	return ...
+end
+local packetOverflowHandler: (plr: Player, number) -> () = function(...)
+	return ...
+end
+
+local freeThread: thread? -- Thread reusage
+
+local function passer(fn, ...)
+	local acquiredThread = freeThread
+	freeThread = nil
+	fn(...)
+	freeThread = acquiredThread
+end
+
+local function yielder()
+	while true do
+		passer(coroutine.yield())
+	end
+end
+
+local function RecycledSpawn(fn, ...)
+	if freeThread == nil then
+		freeThread = coroutine.create(yielder)
+		coroutine.resume(freeThread :: thread)
+	end
+	task.spawn(freeThread :: thread, fn, ...)
+end
+
+local Server = {}
+
+function Server._startProcess()
+	task.spawn(function()
+		debug.setmemorycategory("BridgeNet2")
+		Output.log("Loading")
+
+		local MetaRemoteEvent = Instance.new("RemoteEvent")
+		local DataRemoteEvent = Instance.new("RemoteEvent")
+
+		MetaRemoteEvent.Name = "MetaRemoteEvent"
+		DataRemoteEvent.Name = "DataRemoteEvent"
+
+		MetaRemoteEvent.Parent = ReplicatedStorage
+		DataRemoteEvent.Parent = ReplicatedStorage
+
+		Players.PlayerAdded:Connect(function(plr)
+			playerList[plr] = true
+			loadingPlayers[plr] = 0
+			loadingPlayersQueue[plr] = {}
+			inboundQueue[plr] = {}
+		end)
+
+		Players.PlayerRemoving:Connect(function(plr)
+			playerList[plr] = nil
+			loadingPlayers[plr] = nil
+			loadingPlayersQueue[plr] = nil
+			inboundQueue[plr] = nil
+		end)
+
+		MetaRemoteEvent.OnServerEvent:Connect(function(plr, meta: TMetaMessage)
+			if meta == "loaded" then -- Different meta messages for the future
+				loadingPlayers[plr] = nil
+				DataRemoteEvent:FireClient(plr, loadingPlayersQueue[plr])
+				loadingPlayersQueue[plr] = nil
+			end
+		end)
+
+		DataRemoteEvent.OnServerEvent:Connect(
+			function(plr, tbl) -- Do typechecking before inserting it into the queue- minimize errors in the queue.
+				if typeof(tbl) ~= "table" then -- Invalid packet
+					incorrectTypeHandler(plr)
+					Output.warn(string.format(INVALID_PACKET_MESSAGE, plr.Name, plr.UserId))
+					return
+				end
+
+				for _, v: TInboundPacket in tbl do
+					if typeof(v) ~= "table" and typeof(v) ~= "string" then
+						incorrectTypeHandler(plr)
+						Output.warn(string.format(INVALID_PACKET_MESSAGE, plr.Name, plr.UserId))
+						return
+					end
+
+					table.insert(inboundQueue[plr], v)
+				end
+			end
+		)
+
+		local sendStructure = {}
+		RunService.PostSimulation:Connect(function()
+			debug.profilebegin("BridgeNet2")
+
+			debug.profilebegin("BridgeNet2.send")
+
+			for _, outbound: TOutboundPacket in outboundQueue do
+				local plrVal: TPlayerType = outbound.plrs
+				local identifier: string = outbound.id
+				local contents: { any } = outbound.payload
+
+				if plrVal.type == "all" then -- Who to send the payload to
+					for plr in playerList do
+						if not sendStructure[plr] then -- If a structure doesn't exist for that player, create one
+							sendStructure[plr] = { [identifier] = { contents } }
+						else
+							-- If a structure doesn't exist for that identifier,
+							-- create one
+							if not sendStructure[plr][identifier] then
+								sendStructure[plr][identifier] = { contents }
+							else
+								table.insert(sendStructure[plr][identifier], contents)
+							end
+						end
+					end
+				elseif plrVal.type == "except" then
+					for _, plr in plrVal.plrVal :: { Player } do -- Set every single blacklisted player to false
+						playerList[plr] = false
+					end
+
+					for plr, give in playerList do
+						if give == true then -- Put the payload in every single players data, **if** they're not blacklisted
+							if not sendStructure[plr] then
+								sendStructure[plr] = { [identifier] = { contents } }
+							else
+								if not sendStructure[plr][identifier] then
+									sendStructure[plr][identifier] = { contents }
+								else
+									table.insert(sendStructure[plr][identifier], contents)
+								end
+							end
+						else
+							playerList[plr] = true
+						end
+					end
+					-- Code execution is completely linear, so this is an ultra-fast way of doing blacklisted players
+					-- in huge servers.
+				elseif plrVal.type == "set" then
+					for _, plr in plrVal.plrVal :: { Player } do
+						if not sendStructure[plr] then
+							sendStructure[plr] = { [identifier] = { contents } }
+						else
+							if not sendStructure[plr][identifier] then
+								sendStructure[plr][identifier] = { contents }
+							else
+								table.insert(sendStructure[plr][identifier], contents)
+							end
+						end
+					end
+				end
+			end
+
+			for plr, toSend in sendStructure do
+				if loadingPlayers[plr] then -- Detect if player isn't loaded yet. If not, queue the call.
+					if loadingPlayersQueue[plr] == nil then
+						loadingPlayersQueue[plr] = toSend
+					else
+						for identifier, value in toSend do
+							if loadingPlayersQueue[plr][identifier] == nil then -- Reconciliation
+								loadingPlayersQueue[plr][identifier] = value
+							else
+								TableKit.MergeArray(loadingPlayersQueue[plr][identifier], value)
+							end
+						end
+					end
+				else
+					DataRemoteEvent:FireClient(plr, toSend)
+				end
+
+				sendStructure[plr] = nil
+			end
+
+			table.clear(outboundQueue)
+			-- End BridgeNet2 send profile
+			debug.profileend()
+
+			debug.profilebegin("BridgeNet2.receive")
+
+			for plr, data in inboundQueue do
+				if #data >= 12 then
+					packetOverflowHandler(plr, #data)
+					Output.warn(string.format(PACKET_LIMIT_OVERFLOW, plr.Name, plr.UserId))
+					continue
+				end
+
+				local skip = false
+				for position, value in data do
+					-- Got skipped because last one was an identifier
+					if skip == true then
+						skip = false
+						continue
+					end
+					if typeof(value) == "string" then
+						skip = true
+					else
+						incorrectFormatHandler(plr)
+						Output.warn(string.format("Incorrect format from player: %*:%*", plr.Name, plr.UserId))
+						continue
+					end
+
+					local passed = data[position + 1]
+
+					if typeof(passed) ~= "table" then
+						incorrectFormatHandler(plr)
+						Output.warn(string.format("Incorrect format from player: %*:%*", plr.Name, plr.UserId))
+						continue
+					end
+
+					for _, callback in callbackMap[value] do
+						RecycledSpawn(callback, plr, passed)
+					end
+				end
+
+				table.clear(inboundQueue[plr])
+			end
+
+			-- End BridgeNet2 receive profile
+			debug.profileend()
+
+			-- End BridgeNet2 debug profile
+			debug.profileend()
+		end)
+
+		Output.log("Loaded")
+	end)
+end
+
+function Server._addToQueue(plrs: TPlayerType, identifier: string, payload: { [any]: any })
+	table.insert(outboundQueue, {
+		plrs = plrs,
+		id = identifier,
+		payload = payload,
+	})
+end
+
+function Server._incorrectFormatHandler(func: (plr: Player) -> ())
+	Output.fatalAssert(
+		typeof(func) == "function",
+		string.format("incorrectFormatHandler takes a function, got %*", typeof(func))
+	)
+	incorrectFormatHandler = func
+end
+
+function Server._incorrectTypeHandler(func: (plr: Player) -> ())
+	Output.fatalAssert(
+		typeof(func) == "function",
+		string.format("incorrectTypeHandler takes a function, got %*", typeof(func))
+	)
+	incorrectTypeHandler = func
+end
+
+function Server._packetOverflowHandler(func: (plr: Player, num: number) -> ())
+	Output.fatalAssert(
+		typeof(func) == "function",
+		string.format("packetOverflowHandler takes a function, got %*", typeof(func))
+	)
+	packetOverflowHandler = func
+end
+
+function Server._idIntoBridge(identifier: string)
+	callbackMap[identifier] = {}
+end
+
+function Server._connect(identifier: string, callback: (player: Player, object: any) -> nil)
+	table.insert(callbackMap[identifier], callback)
+end
+
+function Server.AllPlayers(): TPlayerType
+	Output.fatalAssert(isServer, "Cannot call .AllPlayers() from client")
+	return { type = "all" }
+end
+
+function Server.PlayersExcept(blacklistedPlayers: { Player }): TPlayerType
+	Output.fatalAssert(isServer, "Cannot call .AllPlayers() from client")
+	--[[Output.fatalAssert(
+		typeof(blacklistedPlayers) == "table",
+		string.format("PlayersExcept takes an array of players, got %*", typeof(blacklistedPlayers))
+	)]]
+	return { type = "except", plrVal = blacklistedPlayers }
+end
+
+function Server.Players(setOfPlayers: { Player }): TPlayerType
+	Output.fatalAssert(isServer, "Cannot call .AllPlayers() from client")
+	--[[Output.fatalAssert(
+		typeof(setOfPlayers) == "table",
+		string.format("Players takes an array of players, got %*", typeof(setOfPlayers))
+	)]]
+	return { type = "set", plrVal = setOfPlayers }
+end
+
+return Server
+]]></string>
+              </Properties>
+            </Item>
+          </Item>
+        </Item>
+        <Item class="Folder" referent="134">
+          <Properties>
+            <string name="Name">ffrostflame_tablekit@0.1.1</string>
+          </Properties>
+          <Item class="ModuleScript" referent="135">
+            <Properties>
+              <string name="Name">tablekit</string>
+              <string name="Source"><![CDATA[--[=[
+	@class TableKit
+	
+	The container for everything inside of TableKit.
+]=]
+local TableKit = {}
+
+--[=[
+	This function "deep" copies a table, and all of its contents. This means that it will clone the entire table,
+	and tables within that table- as opposed to shallow-copying with table.clone
+	
+	```lua
+	local Dictionary = {
+		SomethingInside = {
+			A = 1,
+			B = 2,
+		},
+	}
+	
+	local CopiedDictionary = TableKit.DeepCopy(Dictionary, SecondDictionary)
+	
+	print(CopiedDictionary) -- prints { ["SomethingInside"] = { ["A"] = 1, ["B"] = 1 } }
+	```
+	
+	:::caution Recursive Function
+	This function is recursive- this can cause stack overflows.
+
+	@within TableKit
+	@param tableToClone table
+	@return table
+]=]
+function TableKit.DeepCopy<T>(tableToClone: T): T
+	local result: T = {}
+
+	for key: number, v in tableToClone do
+		if typeof(v) == "table" then
+			result[key] = TableKit.DeepCopy(v)
+		else
+			result[key] = v
+		end
+	end
+
+	return result
+end
+
+--[=[
+	This function merges two dictionaries.
+
+	Keys *will* overwrite- if there are duplicate keys, dictionary2 will take priority.
+
+	```lua
+	local Dictionary = {
+		A = 1,
+		B = 2,
+	}
+	local SecondDictionary = {
+		C = 3,
+		D = 4,
+	}
+	
+	print(TableKit.MergeDictionary(Dictionary, SecondDictionary)) -- prints { ["A"] = 1, ["B"] = 2, ["C"] = 3, ["D"] = 4 }
+	```
+	
+	:::caution Potential overwrite
+	Keys are overwritten when using .MergeDictionary()
+	
+	@within TableKit
+	@param dictionary1 table
+	@param dictionary2 table
+	@return table
+]=]
+function TableKit.MergeDictionary<dictionary1, dictionary2>(dictionary1: {}, dictionary2: {}): dictionary1 & dictionary2
+	local newTable = table.clone(dictionary1)
+
+	for key, value in dictionary2 do
+		newTable[key] = value
+	end
+
+	return newTable
+end
+
+--[=[
+	This function returns a table with the keys of the passed dictionary.
+	
+	```lua
+	local Dictionary = {
+		A = 1,
+		B = 2,
+		C = 3,
+	}
+	
+	print(TableKit.Keys(Dictionary)) -- prints {"A", "B", "C"}
+	```
+
+	@within TableKit
+	@param dictionary table
+	@return table
+]=]
+function TableKit.Keys<T>(dictionary: { [T]: any }): { T }
+	local keyArray = {}
+
+	for key, _ in dictionary do
+		table.insert(keyArray, key)
+	end
+
+	return keyArray
+end
+
+--[=[
+	This function returns a table with the values of the passed dictionary.
+	
+	```lua
+	local Dictionary = {
+		A = 1,
+		B = 2,
+		C = 3,
+	}
+	
+	print(TableKit.Values(Dictionary)) -- prints {1, 2, 3}
+	```
+
+	@within TableKit
+	@param dictionary table
+	@return table
+]=]
+function TableKit.Values<T>(dictionary: { [any]: T }): { T }
+	local valueArray = {}
+
+	for _, value in dictionary do
+		table.insert(valueArray, value)
+	end
+
+	return valueArray
+end
+
+--[=[
+	Merges two arrays. array2 will be added to array1- this means that the indexes of array1 will be the same.
+	
+	```lua
+	local FirstArray = {"A", "B", "C", "D"}
+	local SecondArray = {"E", "F", "G", "H"}
+	
+	print(TableKit.MergeArray(FirstArray, SecondArray)) -- prints {"A", "B", "C", D", "E", "F", "G", "H"}
+	```
+
+	@within TableKit
+	@param array1 table
+	@param array2 table
+	@return table
+]=]
+function TableKit.MergeArray<T>(array1: { [number]: T }, array2: { [number]: T }): { [number]: T }
+	local newTable = table.clone(array1)
+
+	for _, value in array2 do
+		table.insert(newTable, value)
+	end
+
+	return newTable
+end
+
+--[=[
+	Deep-reconciles a dictionary into another dictionary.
+	
+	```lua
+	local template = {
+		A = 0,
+		B = 0,
+		C = {
+			D = "",
+		},
+	}
+
+	local toReconcile = {
+		A = 9,
+		B = 8,
+		C = {},
+	}
+	
+	print(TableKit.Reconcile(toReconcile, template)) -- prints { A = 9, B = 8, C = { D = "" }
+	```
+
+	@within TableKit
+	@param original table
+	@param reconcile table
+	@return table
+]=]
+function TableKit.Reconcile<T>(original: { [any]: any }, reconcile: T): T
+	local tbl = table.clone(original)
+
+	for key, value in reconcile do
+		if tbl[key] == nil then
+			if typeof(value) == "table" then
+				tbl[key] = TableKit.DeepCopy(value)
+			else
+				tbl[key] = value
+			end
+		elseif typeof(reconcile[key]) == "table" then
+			if typeof(value) == "table" then
+				tbl[key] = TableKit.Reconcile(value, reconcile[key])
+			else
+				tbl[key] = TableKit.DeepCopy(reconcile[key])
+			end
+		end
+	end
+
+	return tbl
+end
+
+--[=[
+	Detects if a table is an array, meaning purely number indexes.
+	
+	```lua
+	local Array = {"A", "B", "C", "D"}
+	local Dictionary = { NotAnArray = true }
+	
+	print(TableKit.IsArray(Array), TableKit.IsArray(Dictionary)) -- prints true, false
+	```
+
+	@within TableKit
+	@param mysteryTable table
+	@return boolean
+]=]
+function TableKit.IsArray(mysteryTable: { [any]: any }): boolean
+	local count = 0
+	for _, _ in mysteryTable do
+		count += 1
+	end
+	return count == #mysteryTable
+end
+
+--[=[
+	Detects if a table is a dictionary, meaning it is not purely number indexes.
+	
+	```lua
+	local Array = {"A", "B", "C", "D"}
+	local Dictionary = { NotAnArray = true }
+	
+	print(TableKit.IsDictionary(Array), TableKit.IsDictionary(Dictionary)) -- prints false, true
+	```
+
+	@within TableKit
+	@param mysteryTable table
+	@return boolean
+]=]
+function TableKit.IsDictionary(mysteryTable: { [any]: any }): boolean
+	return not TableKit.IsArray(mysteryTable)
+end
+
+--[=[
+	Converts a table into a string.
+	
+	```lua
+	local DictionaryA = {
+		A = "Z",
+		B = "X",
+		C = "Y",
+	}
+	
+	print(TableKit.ToString(DictionaryA)) -- prints {
+							--			[A]: Z
+							--			[C]: Y
+							--			[B]: X
+							--		 }
+	```
+
+	@within TableKit
+	@param obj {}
+	@return string
+]=]
+function TableKit.ToString(obj: { [any]: any }): string
+	local str = ""
+	for key, value in obj do
+		local stringifiedKey = tostring(key)
+		local stringifiedValue = tostring(value)
+
+		local newline = string.format("[%*]: %*\n", stringifiedKey, stringifiedValue)
+		str ..= newline
+	end
+	return str
+end
+
+--[=[
+	Takes in a data type, and returns it in array form.
+	
+	```lua
+	local str = "Test"
+	
+	print(TableKit.From(str)) -- prints ("T", "e", "s", t")
+	```
+
+	@within TableKit
+	@param value any
+	@return { [number]: any }
+]=]
+function TableKit.From(value: any): { [number]: any }
+	if typeof(value) == "string" then
+		local arr = {}
+		for i = 1, string.len(value) do
+			table.insert(arr, string.sub(value, i, i))
+		end
+		return arr
+	elseif typeof(value) == "Color3" then
+		return { value.R, value.G, value.B }
+	elseif typeof(value) == "Vector2" then
+		return { value.X, value.Y }
+	elseif typeof(value) == "Vector3" then
+		return { value.X, value.Y, value.Z }
+	elseif typeof(value) == "NumberSequence" then
+		return value.Keypoints
+	elseif typeof(value) == "Vector3int16" then
+		return { value.X, value.Y, value.Z }
+	elseif typeof(value) == "Vector2int16" then
+		return { value.X, value.Y }
+	else
+		return { value }
+	end
+end
+
+--[=[
+	Creates a shallow copy of an array, passed through a filter callback- if the callback returns false, the element is removed.
+	
+	```lua
+	local str = "Test"
+	
+	print(TableKit.From(str)) -- prints ("T", "e", "s", t")
+	```
+
+	@within TableKit
+	@param arr { [number]: any }
+	@param callback (value: value) -> boolean
+	@return { [number]: any }
+]=]
+function TableKit.Filter<T>(arr: { [number]: T }, callback: (value: T) -> boolean)
+	local tbl = {}
+
+	for _, value in arr do
+		if callback(value) then
+			table.insert(tbl, value)
+		end
+	end
+
+	return tbl
+end
+
+--[=[
+	Loops through every single element, and puts it through a callback. If the callback returns true, the function returns true.
+	
+	```lua
+	local array = {1, 2, 3, 4, 5}
+	local even = function(value) return value % 2 == 0 end
+
+	print(TableKit.Some(array, even)) -- Prints true
+	```
+	
+	@within TableKit
+	@param arr {}
+	@param callback (value) -> boolean
+	@return boolean
+]=]
+function TableKit.Some(arr: { [any]: any }, callback: (value: any) -> boolean): boolean
+	for _, value in arr do
+		if callback(value) == true then
+			return true
+		end
+	end
+	return false
+end
+
+--[=[
+	Detects if a table has an embedded table as one of its members.
+	
+	```lua
+	local Shallow = {"a", "b"}
+	local Deep = {"a", {"b"}}
+	
+	print(TableKit.IsFlat(Shallow)) -- prints true
+	print(TableKit.IsFlat(Deep)) -- prints true
+	```
+	
+	@within TableKit
+	@param tbl table
+	@return boolean
+]=]
+function TableKit.IsFlat(tbl: { [any]: any }): boolean
+	for _, v in tbl do
+		if typeof(v) == "table" then
+			return false
+		end
+	end
+	return true
+end
+
+--[=[
+	Loops through every single element, and puts it through a callback. If any of the conditions return false, the function returns false.
+	
+	```lua
+	local array = {1, 2, 3, 4, 5}
+	local even = function(value) return value % 2 == 0 end
+	local odd = function(value) return value % 2 ~= 0 end
+	
+	print(TableKit.Every(array, even)) -- Prints false
+	print(TableKit.Every(array, odd)) -- Prints false
+	```
+	
+	@within TableKit
+	@param array {}
+	@param callback (value) -> boolean
+	@return boolean
+]=]
+function TableKit.Every<T>(array: { [number]: value }, callback: (value) -> boolean): (boolean, number)
+	for index, value in array do
+		if not callback(value) then
+			return false, index
+		end
+	end
+	return true
+end
+
+--[=[
+	Detects if a dictionary has a certain key.
+	
+	```lua
+	local Dictionary = {
+		Hay = "A",
+		MoreHay = "B",
+		Needle = "C",
+		SomeHay = "D",
+	}
+	
+	print(TableKit.HasKey(Dictionary, "Needle")) -- prints true
+	```
+	
+	@within TableKit
+	@param dictionary table
+	@param key any
+	@return boolean
+]=]
+function TableKit.HasKey<T>(dictionary: { [T]: any }, key: T)
+	return dictionary[key] ~= nil
+end
+
+--[=[
+	Detects if a dictionary has a certain value.
+	
+	```lua
+	local Array = { "Has", "this", "thing" }
+	
+	print(TableKit.HasValue(Array, "Has")) -- prints true
+	```
+	
+	@within TableKit
+	@param tbl table
+	@param value any
+	@return boolean
+]=]
+function TableKit.HasValue(tbl: { [any]: any }, value: any)
+	for _, v in tbl do
+		if v == value then
+			return true
+		end
+	end
+	return false
+end
+
+--[=[
+	Detects if a table is empty.
+	
+	```lua
+	local Empty = {}
+	local NotEmpty = { "Stuff" }
+	
+	print(TableKit.IsEmpty(Empty), TableKit.IsEmpty(NotEmpty)) -- prints true, false
+	```
+
+	@within TableKit
+	@param mysteryTable table
+	@return boolean
+]=]
+function TableKit.IsEmpty(mysteryTable: { [any]: any })
+	return next(mysteryTable) == nil
+end
+
+return TableKit
+]]></string>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Folder" referent="136">
           <Properties>
             <string name="Name">howmanysmall_janitor@1.15.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="123">
+          <Item class="ModuleScript" referent="137">
             <Properties>
               <string name="Name">janitor</string>
               <string name="Source"><![CDATA[-- Compiled with L+ C Edition
@@ -8876,7 +10765,7 @@ table.freeze(Janitor)
 return Janitor
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="124">
+            <Item class="ModuleScript" referent="138">
               <Properties>
                 <string name="Name">GetPromiseLibrary</string>
                 <string name="Source"><![CDATA[-- TODO: When Promise is on Wally, remove this in favor of just `script.Parent.Parent:FindFirstChild("Promise")`.
@@ -8929,7 +10818,7 @@ return GetPromiseLibrary
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="125">
+            <Item class="ModuleScript" referent="139">
               <Properties>
                 <string name="Name">RbxScriptConnection</string>
                 <string name="Source"><![CDATA[--[=[
@@ -8973,7 +10862,7 @@ return RbxScriptConnection
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="126">
+            <Item class="ModuleScript" referent="140">
               <Properties>
                 <string name="Name">Symbol</string>
                 <string name="Source"><![CDATA[-- This only exists because the LSP warns Key `__tostring` not found in type `table?`.
@@ -8993,11 +10882,11 @@ return Symbol
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="127">
+        <Item class="Folder" referent="141">
           <Properties>
             <string name="Name">roblox_roact@1.4.4</string>
           </Properties>
-          <Item class="ModuleScript" referent="128">
+          <Item class="ModuleScript" referent="142">
             <Properties>
               <string name="Name">roact</string>
               <string name="Source"><![CDATA[--~strict
@@ -9051,7 +10940,7 @@ local Roact = strict({
 return Roact
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="129">
+            <Item class="ModuleScript" referent="143">
               <Properties>
                 <string name="Name">Binding</string>
                 <string name="Source"><![CDATA[local createSignal = require(script.Parent.createSignal)
@@ -9212,7 +11101,7 @@ return BindingInternalApi
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="130">
+            <Item class="ModuleScript" referent="144">
               <Properties>
                 <string name="Name">Component</string>
                 <string name="Source"><![CDATA[local assign = require(script.Parent.assign)
@@ -9730,12 +11619,12 @@ return Component
 ]]></string>
               </Properties>
             </Item>
-            <Item class="Folder" referent="131">
+            <Item class="Folder" referent="145">
               <Properties>
                 <string name="Name">Component.spec</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="132">
+            <Item class="ModuleScript" referent="146">
               <Properties>
                 <string name="Name">ComponentLifecyclePhase</string>
                 <string name="Source"><![CDATA[local Symbol = require(script.Parent.Symbol)
@@ -9760,7 +11649,7 @@ return ComponentLifecyclePhase
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="133">
+            <Item class="ModuleScript" referent="147">
               <Properties>
                 <string name="Name">Config</string>
                 <string name="Source"><![CDATA[--[[
@@ -9881,7 +11770,7 @@ return Config
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="134">
+            <Item class="ModuleScript" referent="148">
               <Properties>
                 <string name="Name">ElementKind</string>
                 <string name="Source"><![CDATA[--[[
@@ -9938,7 +11827,7 @@ return ElementKind
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="135">
+            <Item class="ModuleScript" referent="149">
               <Properties>
                 <string name="Name">ElementUtils</string>
                 <string name="Source"><![CDATA[--!strict
@@ -10046,7 +11935,7 @@ return ElementUtils
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="136">
+            <Item class="ModuleScript" referent="150">
               <Properties>
                 <string name="Name">GlobalConfig</string>
                 <string name="Source"><![CDATA[--[[
@@ -10059,7 +11948,7 @@ return Config.new()
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="137">
+            <Item class="ModuleScript" referent="151">
               <Properties>
                 <string name="Name">Logging</string>
                 <string name="Source"><![CDATA[--[[
@@ -10224,7 +12113,7 @@ return Logging
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="138">
+            <Item class="ModuleScript" referent="152">
               <Properties>
                 <string name="Name">None</string>
                 <string name="Source"><![CDATA[local Symbol = require(script.Parent.Symbol)
@@ -10237,7 +12126,7 @@ return None
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="139">
+            <Item class="ModuleScript" referent="153">
               <Properties>
                 <string name="Name">NoopRenderer</string>
                 <string name="Source"><![CDATA[--[[
@@ -10265,7 +12154,7 @@ return NoopRenderer
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="140">
+            <Item class="ModuleScript" referent="154">
               <Properties>
                 <string name="Name">Portal</string>
                 <string name="Source"><![CDATA[local Symbol = require(script.Parent.Symbol)
@@ -10276,11 +12165,11 @@ return Portal
 ]]></string>
               </Properties>
             </Item>
-            <Item class="Folder" referent="141">
+            <Item class="Folder" referent="155">
               <Properties>
                 <string name="Name">PropMarkers</string>
               </Properties>
-              <Item class="ModuleScript" referent="142">
+              <Item class="ModuleScript" referent="156">
                 <Properties>
                   <string name="Name">Change</string>
                   <string name="Source"><![CDATA[--[[
@@ -10324,7 +12213,7 @@ return Change
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="143">
+              <Item class="ModuleScript" referent="157">
                 <Properties>
                   <string name="Name">Children</string>
                   <string name="Source"><![CDATA[local Symbol = require(script.Parent.Parent.Symbol)
@@ -10335,7 +12224,7 @@ return Children
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="144">
+              <Item class="ModuleScript" referent="158">
                 <Properties>
                   <string name="Name">Event</string>
                   <string name="Source"><![CDATA[--[[
@@ -10382,7 +12271,7 @@ return Event
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="145">
+              <Item class="ModuleScript" referent="159">
                 <Properties>
                   <string name="Name">Ref</string>
                   <string name="Source"><![CDATA[local Symbol = require(script.Parent.Parent.Symbol)
@@ -10394,7 +12283,7 @@ return Ref
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="146">
+            <Item class="ModuleScript" referent="160">
               <Properties>
                 <string name="Name">PureComponent</string>
                 <string name="Source"><![CDATA[--[[
@@ -10441,7 +12330,7 @@ return PureComponent
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="147">
+            <Item class="ModuleScript" referent="161">
               <Properties>
                 <string name="Name">RobloxRenderer</string>
                 <string name="Source"><![CDATA[--[[
@@ -10729,7 +12618,7 @@ return RobloxRenderer
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="148">
+            <Item class="ModuleScript" referent="162">
               <Properties>
                 <string name="Name">SingleEventManager</string>
                 <string name="Source"><![CDATA[--[[
@@ -10880,7 +12769,7 @@ return SingleEventManager
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="149">
+            <Item class="ModuleScript" referent="163">
               <Properties>
                 <string name="Name">Symbol</string>
                 <string name="Source"><![CDATA[--!strict
@@ -10917,7 +12806,7 @@ return Symbol
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="150">
+            <Item class="ModuleScript" referent="164">
               <Properties>
                 <string name="Name">Type</string>
                 <string name="Source"><![CDATA[--[[
@@ -10971,7 +12860,7 @@ return Type
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="151">
+            <Item class="ModuleScript" referent="165">
               <Properties>
                 <string name="Name">assertDeepEqual</string>
                 <string name="Source"><![CDATA[--!strict
@@ -11046,7 +12935,7 @@ return assertDeepEqual
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="152">
+            <Item class="ModuleScript" referent="166">
               <Properties>
                 <string name="Name">assign</string>
                 <string name="Source"><![CDATA[local None = require(script.Parent.None)
@@ -11079,7 +12968,7 @@ return assign
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="153">
+            <Item class="ModuleScript" referent="167">
               <Properties>
                 <string name="Name">createContext</string>
                 <string name="Source"><![CDATA[local Symbol = require(script.Parent.Symbol)
@@ -11237,7 +13126,7 @@ return createContext
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="154">
+            <Item class="ModuleScript" referent="168">
               <Properties>
                 <string name="Name">createElement</string>
                 <string name="Source"><![CDATA[local Children = require(script.Parent.PropMarkers.Children)
@@ -11317,7 +13206,7 @@ return createElement
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="155">
+            <Item class="ModuleScript" referent="169">
               <Properties>
                 <string name="Name">createFragment</string>
                 <string name="Source"><![CDATA[local ElementKind = require(script.Parent.ElementKind)
@@ -11335,7 +13224,7 @@ return createFragment
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="156">
+            <Item class="ModuleScript" referent="170">
               <Properties>
                 <string name="Name">createReconciler</string>
                 <string name="Source"><![CDATA[--!nonstrict
@@ -11842,7 +13731,7 @@ return createReconciler
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="157">
+            <Item class="ModuleScript" referent="171">
               <Properties>
                 <string name="Name">createReconcilerCompat</string>
                 <string name="Source"><![CDATA[--[[
@@ -11895,7 +13784,7 @@ return createReconcilerCompat
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="158">
+            <Item class="ModuleScript" referent="172">
               <Properties>
                 <string name="Name">createRef</string>
                 <string name="Source"><![CDATA[--[[
@@ -11939,7 +13828,7 @@ return createRef
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="159">
+            <Item class="ModuleScript" referent="173">
               <Properties>
                 <string name="Name">createSignal</string>
                 <string name="Source"><![CDATA[--[[
@@ -12013,7 +13902,7 @@ return createSignal
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="160">
+            <Item class="ModuleScript" referent="174">
               <Properties>
                 <string name="Name">createSpy</string>
                 <string name="Source"><![CDATA[--[[
@@ -12097,7 +13986,7 @@ return createSpy
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="161">
+            <Item class="ModuleScript" referent="175">
               <Properties>
                 <string name="Name">forwardRef</string>
                 <string name="Source"><![CDATA[local assign = require(script.Parent.assign)
@@ -12131,7 +14020,7 @@ return forwardRef
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="162">
+            <Item class="ModuleScript" referent="176">
               <Properties>
                 <string name="Name">getDefaultInstanceProperty</string>
                 <string name="Source"><![CDATA[--[[
@@ -12191,7 +14080,7 @@ return getDefaultInstanceProperty
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="163">
+            <Item class="ModuleScript" referent="177">
               <Properties>
                 <string name="Name">internalAssert</string>
                 <string name="Source"><![CDATA[local function internalAssert(condition, message)
@@ -12204,7 +14093,7 @@ return internalAssert
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="164">
+            <Item class="ModuleScript" referent="178">
               <Properties>
                 <string name="Name">invalidSetStateMessages</string>
                 <string name="Source"><![CDATA[--[[
@@ -12248,7 +14137,7 @@ return invalidSetStateMessages
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="165">
+            <Item class="ModuleScript" referent="179">
               <Properties>
                 <string name="Name">oneChild</string>
                 <string name="Source"><![CDATA[--[[
@@ -12282,7 +14171,7 @@ return oneChild
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="166">
+            <Item class="ModuleScript" referent="180">
               <Properties>
                 <string name="Name">strict</string>
                 <string name="Source"><![CDATA[--!strict
@@ -12312,11 +14201,11 @@ return strict
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="167">
+        <Item class="Folder" referent="181">
           <Properties>
             <string name="Name">roblox_testez@0.4.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="168">
+          <Item class="ModuleScript" referent="182">
             <Properties>
               <string name="Name">testez</string>
               <string name="Source">local Expectation = require(script.Expectation)
@@ -12360,7 +14249,7 @@ local TestEZ = {
 
 return TestEZ</string>
             </Properties>
-            <Item class="ModuleScript" referent="169">
+            <Item class="ModuleScript" referent="183">
               <Properties>
                 <string name="Name">Context</string>
                 <string name="Source"><![CDATA[--[[
@@ -12392,7 +14281,7 @@ return Context
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="170">
+            <Item class="ModuleScript" referent="184">
               <Properties>
                 <string name="Name">Expectation</string>
                 <string name="Source"><![CDATA[--[[
@@ -12709,7 +14598,7 @@ return Expectation
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="171">
+            <Item class="ModuleScript" referent="185">
               <Properties>
                 <string name="Name">ExpectationContext</string>
                 <string name="Source"><![CDATA[local Expectation = require(script.Parent.Expectation)
@@ -12753,7 +14642,7 @@ return ExpectationContext
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="172">
+            <Item class="ModuleScript" referent="186">
               <Properties>
                 <string name="Name">LifecycleHooks</string>
                 <string name="Source"><![CDATA[local TestEnum = require(script.Parent.TestEnum)
@@ -12848,11 +14737,11 @@ return LifecycleHooks
 ]]></string>
               </Properties>
             </Item>
-            <Item class="Folder" referent="173">
+            <Item class="Folder" referent="187">
               <Properties>
                 <string name="Name">Reporters</string>
               </Properties>
-              <Item class="ModuleScript" referent="174">
+              <Item class="ModuleScript" referent="188">
                 <Properties>
                   <string name="Name">TeamCityReporter</string>
                   <string name="Source">local TestService = game:GetService("TestService")
@@ -12959,7 +14848,7 @@ end
 return TeamCityReporter</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="175">
+              <Item class="ModuleScript" referent="189">
                 <Properties>
                   <string name="Name">TextReporter</string>
                   <string name="Source">--[[
@@ -13070,7 +14959,7 @@ end
 return TextReporter</string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="176">
+              <Item class="ModuleScript" referent="190">
                 <Properties>
                   <string name="Name">TextReporterQuiet</string>
                   <string name="Source">--[[
@@ -13173,7 +15062,7 @@ return TextReporterQuiet</string>
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="177">
+            <Item class="ModuleScript" referent="191">
               <Properties>
                 <string name="Name">TestBootstrap</string>
                 <string name="Source">--[[
@@ -13325,7 +15214,7 @@ end
 return TestBootstrap</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="178">
+            <Item class="ModuleScript" referent="192">
               <Properties>
                 <string name="Name">TestEnum</string>
                 <string name="Source">--[[
@@ -13358,7 +15247,7 @@ TestEnum.NodeModifier = {
 return TestEnum</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="179">
+            <Item class="ModuleScript" referent="193">
               <Properties>
                 <string name="Name">TestPlan</string>
                 <string name="Source"><![CDATA[--[[
@@ -13668,7 +15557,7 @@ return TestPlan
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="180">
+            <Item class="ModuleScript" referent="194">
               <Properties>
                 <string name="Name">TestPlanner</string>
                 <string name="Source">--[[
@@ -13713,7 +15602,7 @@ end
 return TestPlanner</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="181">
+            <Item class="ModuleScript" referent="195">
               <Properties>
                 <string name="Name">TestResults</string>
                 <string name="Source">--[[
@@ -13830,7 +15719,7 @@ end
 return TestResults</string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="182">
+            <Item class="ModuleScript" referent="196">
               <Properties>
                 <string name="Name">TestRunner</string>
                 <string name="Source"><![CDATA[--[[
@@ -14024,7 +15913,7 @@ return TestRunner
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="183">
+            <Item class="ModuleScript" referent="197">
               <Properties>
                 <string name="Name">TestSession</string>
                 <string name="Source"><![CDATA[--[[
@@ -14275,32 +16164,32 @@ return TestSession
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="184">
+        <Item class="Folder" referent="198">
           <Properties>
             <string name="Name">sleitnick_comm@0.3.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="185">
+          <Item class="ModuleScript" referent="199">
             <Properties>
               <string name="Name">Option</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_option@1.0.4"]["option"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="186">
+          <Item class="ModuleScript" referent="200">
             <Properties>
               <string name="Name">Promise</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["evaera_promise@4.0.0"]["promise"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="187">
+          <Item class="ModuleScript" referent="201">
             <Properties>
               <string name="Name">Signal</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_signal@1.4.2"]["signal"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="188">
+          <Item class="ModuleScript" referent="202">
             <Properties>
               <string name="Name">comm</string>
               <string name="Source"><![CDATA[-- Comm
@@ -14340,7 +16229,7 @@ local Comm = {
 return Comm
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="189">
+            <Item class="ModuleScript" referent="203">
               <Properties>
                 <string name="Name">Client</string>
                 <string name="Source"><![CDATA[local Util = require(script.Parent.Util)
@@ -14480,7 +16369,7 @@ end
 return Client
 ]]></string>
               </Properties>
-              <Item class="ModuleScript" referent="190">
+              <Item class="ModuleScript" referent="204">
                 <Properties>
                   <string name="Name">ClientComm</string>
                   <string name="Source"><![CDATA[-- ClientComm
@@ -14718,7 +16607,7 @@ return ClientComm
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="191">
+              <Item class="ModuleScript" referent="205">
                 <Properties>
                   <string name="Name">ClientRemoteProperty</string>
                   <string name="Source"><![CDATA[-- ClientRemoteProperty
@@ -14883,7 +16772,7 @@ return ClientRemoteProperty
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="192">
+              <Item class="ModuleScript" referent="206">
                 <Properties>
                   <string name="Name">ClientRemoteSignal</string>
                   <string name="Source"><![CDATA[-- ClientRemoteSignal
@@ -14997,7 +16886,7 @@ return ClientRemoteSignal
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="193">
+            <Item class="ModuleScript" referent="207">
               <Properties>
                 <string name="Name">Server</string>
                 <string name="Source"><![CDATA[local Util = require(script.Parent.Util)
@@ -15141,7 +17030,7 @@ end
 return Server
 ]]></string>
               </Properties>
-              <Item class="ModuleScript" referent="194">
+              <Item class="ModuleScript" referent="208">
                 <Properties>
                   <string name="Name">RemoteProperty</string>
                   <string name="Source"><![CDATA[-- RemoteProperty
@@ -15442,7 +17331,7 @@ return RemoteProperty
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="195">
+              <Item class="ModuleScript" referent="209">
                 <Properties>
                   <string name="Name">RemoteSignal</string>
                   <string name="Source"><![CDATA[-- RemoteSignal
@@ -15647,7 +17536,7 @@ return RemoteSignal
 ]]></string>
                 </Properties>
               </Item>
-              <Item class="ModuleScript" referent="196">
+              <Item class="ModuleScript" referent="210">
                 <Properties>
                   <string name="Name">ServerComm</string>
                   <string name="Source"><![CDATA[-- ServerComm
@@ -15859,7 +17748,7 @@ return ServerComm
                 </Properties>
               </Item>
             </Item>
-            <Item class="ModuleScript" referent="197">
+            <Item class="ModuleScript" referent="211">
               <Properties>
                 <string name="Name">Types</string>
                 <string name="Source"><![CDATA[-- Types
@@ -15883,7 +17772,7 @@ return nil
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="198">
+            <Item class="ModuleScript" referent="212">
               <Properties>
                 <string name="Name">Util</string>
                 <string name="Source"><![CDATA[local RunService = game:GetService("RunService")
@@ -15918,39 +17807,39 @@ return Util
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="199">
+        <Item class="Folder" referent="213">
           <Properties>
             <string name="Name">sleitnick_component@2.4.6</string>
           </Properties>
-          <Item class="ModuleScript" referent="200">
+          <Item class="ModuleScript" referent="214">
             <Properties>
               <string name="Name">Promise</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["evaera_promise@4.0.0"]["promise"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="201">
+          <Item class="ModuleScript" referent="215">
             <Properties>
               <string name="Name">Signal</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_signal@1.4.2"]["signal"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="202">
+          <Item class="ModuleScript" referent="216">
             <Properties>
               <string name="Name">Symbol</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_symbol@2.0.1"]["symbol"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="203">
+          <Item class="ModuleScript" referent="217">
             <Properties>
               <string name="Name">Trove</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_trove@0.4.2"]["trove"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="204">
+          <Item class="ModuleScript" referent="218">
             <Properties>
               <string name="Name">component</string>
               <string name="Source"><![CDATA[-- Component
@@ -16680,11 +18569,11 @@ return Component
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="205">
+        <Item class="Folder" referent="219">
           <Properties>
             <string name="Name">sleitnick_concur@0.1.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="206">
+          <Item class="ModuleScript" referent="220">
             <Properties>
               <string name="Name">concur</string>
               <string name="Source"><![CDATA[--!strict
@@ -17233,11 +19122,11 @@ return Concur
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="207">
+        <Item class="Folder" referent="221">
           <Properties>
             <string name="Name">sleitnick_enum-list@2.0.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="208">
+          <Item class="ModuleScript" referent="222">
             <Properties>
               <string name="Name">enum-list</string>
               <string name="Source"><![CDATA[--!strict
@@ -17348,25 +19237,25 @@ return EnumList
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="209">
+        <Item class="Folder" referent="223">
           <Properties>
             <string name="Name">sleitnick_knit@1.4.7</string>
           </Properties>
-          <Item class="ModuleScript" referent="210">
+          <Item class="ModuleScript" referent="224">
             <Properties>
               <string name="Name">Comm</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_comm@0.3.1"]["comm"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="211">
+          <Item class="ModuleScript" referent="225">
             <Properties>
               <string name="Name">Promise</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["evaera_promise@4.0.0"]["promise"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="212">
+          <Item class="ModuleScript" referent="226">
             <Properties>
               <string name="Name">knit</string>
               <string name="Source"><![CDATA[if game:GetService("RunService"):IsServer() then
@@ -17380,7 +19269,7 @@ else
 end
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="213">
+            <Item class="ModuleScript" referent="227">
               <Properties>
                 <string name="Name">KnitClient</string>
                 <string name="Source"><![CDATA[--[=[
@@ -17788,7 +19677,7 @@ return KnitClient
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="214">
+            <Item class="ModuleScript" referent="228">
               <Properties>
                 <string name="Name">KnitServer</string>
                 <string name="Source"><![CDATA[--[=[
@@ -18235,11 +20124,11 @@ return KnitServer
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="215">
+        <Item class="Folder" referent="229">
           <Properties>
             <string name="Name">sleitnick_log@0.1.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="216">
+          <Item class="ModuleScript" referent="230">
             <Properties>
               <string name="Name">log</string>
               <string name="Source"><![CDATA[-- Log
@@ -18992,11 +20881,11 @@ return Log
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="217">
+        <Item class="Folder" referent="231">
           <Properties>
             <string name="Name">sleitnick_option@1.0.4</string>
           </Properties>
-          <Item class="ModuleScript" referent="218">
+          <Item class="ModuleScript" referent="232">
             <Properties>
               <string name="Name">option</string>
               <string name="Source"><![CDATA[-- Option
@@ -19450,11 +21339,11 @@ return Option
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="219">
+        <Item class="Folder" referent="233">
           <Properties>
             <string name="Name">sleitnick_pid@1.0.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="220">
+          <Item class="ModuleScript" referent="234">
             <Properties>
               <string name="Name">pid</string>
               <string name="Source"><![CDATA[-- PID
@@ -19625,11 +21514,11 @@ return PID
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="221">
+        <Item class="Folder" referent="235">
           <Properties>
             <string name="Name">sleitnick_signal@1.4.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="222">
+          <Item class="ModuleScript" referent="236">
             <Properties>
               <string name="Name">signal</string>
               <string name="Source"><![CDATA[-- -----------------------------------------------------------------------------
@@ -20040,25 +21929,25 @@ return {
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="223">
+        <Item class="Folder" referent="237">
           <Properties>
             <string name="Name">sleitnick_streamable@1.2.4</string>
           </Properties>
-          <Item class="ModuleScript" referent="224">
+          <Item class="ModuleScript" referent="238">
             <Properties>
               <string name="Name">Signal</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_signal@1.4.2"]["signal"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="225">
+          <Item class="ModuleScript" referent="239">
             <Properties>
               <string name="Name">Trove</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_trove@0.4.2"]["trove"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="226">
+          <Item class="ModuleScript" referent="240">
             <Properties>
               <string name="Name">streamable</string>
               <string name="Source"><![CDATA[-- Streamable
@@ -20071,7 +21960,7 @@ return {
 }
 ]]></string>
             </Properties>
-            <Item class="ModuleScript" referent="227">
+            <Item class="ModuleScript" referent="241">
               <Properties>
                 <string name="Name">Streamable</string>
                 <string name="Source"><![CDATA[--!strict
@@ -20279,7 +22168,7 @@ return Streamable
 ]]></string>
               </Properties>
             </Item>
-            <Item class="ModuleScript" referent="228">
+            <Item class="ModuleScript" referent="242">
               <Properties>
                 <string name="Name">StreamableUtil</string>
                 <string name="Source"><![CDATA[--!strict
@@ -20367,11 +22256,11 @@ return StreamableUtil
             </Item>
           </Item>
         </Item>
-        <Item class="Folder" referent="229">
+        <Item class="Folder" referent="243">
           <Properties>
             <string name="Name">sleitnick_symbol@2.0.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="230">
+          <Item class="ModuleScript" referent="244">
             <Properties>
               <string name="Name">symbol</string>
               <string name="Source"><![CDATA[-- Symbol
@@ -20434,11 +22323,11 @@ return Symbol
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="231">
+        <Item class="Folder" referent="245">
           <Properties>
             <string name="Name">sleitnick_table-util@1.2.0</string>
           </Properties>
-          <Item class="ModuleScript" referent="232">
+          <Item class="ModuleScript" referent="246">
             <Properties>
               <string name="Name">table-util</string>
               <string name="Source"><![CDATA[--!strict
@@ -21358,11 +23247,11 @@ return TableUtil
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="233">
+        <Item class="Folder" referent="247">
           <Properties>
             <string name="Name">sleitnick_task-queue@0.1.1</string>
           </Properties>
-          <Item class="ModuleScript" referent="234">
+          <Item class="ModuleScript" referent="248">
             <Properties>
               <string name="Name">task-queue</string>
               <string name="Source"><![CDATA[--!strict
@@ -21464,18 +23353,18 @@ return TaskQueue
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="235">
+        <Item class="Folder" referent="249">
           <Properties>
             <string name="Name">sleitnick_timer@1.1.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="236">
+          <Item class="ModuleScript" referent="250">
             <Properties>
               <string name="Name">Signal</string>
               <string name="Source"><![CDATA[return require(script.Parent.Parent["sleitnick_signal@1.4.2"]["signal"])
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="237">
+          <Item class="ModuleScript" referent="251">
             <Properties>
               <string name="Name">timer</string>
               <string name="Source"><![CDATA[-- Timer
@@ -21712,11 +23601,11 @@ return Timer
             </Properties>
           </Item>
         </Item>
-        <Item class="Folder" referent="238">
+        <Item class="Folder" referent="252">
           <Properties>
             <string name="Name">sleitnick_trove@0.4.2</string>
           </Properties>
-          <Item class="ModuleScript" referent="239">
+          <Item class="ModuleScript" referent="253">
             <Properties>
               <string name="Name">trove</string>
               <string name="Source"><![CDATA[-- Trove
@@ -22068,7 +23957,7 @@ return Trove
           </Item>
         </Item>
       </Item>
-      <Item class="ModuleScript" referent="240">
+      <Item class="ModuleScript" referent="254">
         <Properties>
           <string name="Name">testez</string>
           <string name="Source"><![CDATA[return require(script.Parent._Index["roblox_testez@0.4.1"]["testez"])
@@ -22077,35 +23966,42 @@ return Trove
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="241">
+  <Item class="ServerScriptService" referent="255">
     <Properties>
       <string name="Name">ServerScriptService</string>
       <bool name="LoadStringEnabled">true</bool>
     </Properties>
+    <Item class="Script" referent="256">
+      <Properties>
+        <string name="Name">Startup</string>
+        <string name="Source"><![CDATA[local Slug = game:GetService("ReplicatedStorage"):WaitForChild()
+]]></string>
+      </Properties>
+    </Item>
   </Item>
-  <Item class="SoundService" referent="242">
+  <Item class="SoundService" referent="257">
     <Properties>
       <string name="Name">SoundService</string>
       <bool name="RespectFilteringEnabled">true</bool>
     </Properties>
   </Item>
-  <Item class="StarterPlayer" referent="243">
+  <Item class="StarterPlayer" referent="258">
     <Properties>
       <string name="Name">StarterPlayer</string>
       <float name="CharacterWalkSpeed">16</float>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="244">
+    <Item class="StarterPlayerScripts" referent="259">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
     </Item>
   </Item>
-  <Item class="Workspace" referent="245">
+  <Item class="Workspace" referent="260">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="FilteringEnabled">true</bool>
     </Properties>
-    <Item class="Part" referent="246">
+    <Item class="Part" referent="261">
       <Properties>
         <string name="Name">Baseplate</string>
         <bool name="Anchored">true</bool>

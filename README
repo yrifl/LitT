@@ -1,13 +1,14 @@
 -- ./ -- [ DONE ]
 
-What is this?
+> What's this?
 
 My personal Rojo template for developing games. So you might think, how do I use this template?
 
 Well, you have to install aftman from <@LPGhatguy/aftman>, and after that clone, this repository using `git clone` and finally type this command to install other tools (Rojo, Selene, Wally, etc) `aftman install`. Congratulations, you have your Rojo developer workspace set up! You can continue now to read Rojo documentation <rojo.space/docs> for further development.
 
+> Others?
 
-Notice: For low-end users that use vscode and can't handle both instances running (Roblox Studio & VsCode). I recommend building the project and then editing the build-file (.rbxlx) in the Studio would be perfect! or alternatively you can use Sublime-Text since it's lightweight! I'm currently using SublimeText. The only reason I create this template is that probably I will get a better computer in the next years and uses it as some sort of config for future computers and only uses this to sync Wally's modules to build file.
+Notice: For low-end users that use vscode and can't handle both instances running (Roblox Studio & VsCode). I recommend building the project and then editing the build-file (.rbxlx) in the Studio and it would be perfect! or alternatively you can use Sublime-Text since it's lightweight text-editor! The only reason I create this template is that probably I will get a better computer in the next years and uses it as some sort of config for future computers and only uses this to sync Wally's modules to build file.
 
 List of installed tools:
 	- aftman <LPGhatguy@aftman>
@@ -18,5 +19,7 @@ List of installed tools:
 	- stylua <JohnnyMorganz@StyLua>
 
 Build the project using `rojo build` or run `./build.bat` for Windows, and './build.sh' for MacOS, and Linux (There is no way).
+
+Author: xYuri#7125
 
 Thank you, bye.

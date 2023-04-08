@@ -1,1 +1,2 @@
-local Slug = game:GetService("ReplicatedStorage"):WaitForChild()
+local Packages = game:GetService("ReplicatedStorage").Packages
+local Knit = require(Packages.Knit)
